@@ -1,0 +1,370 @@
+;; Josh's sawfish configuration
+;; 
+
+(unbind-keys window-keymap)
+(define max-keymap (make-keymap))
+( bind-keys max-keymap
+	    "W-m" 'maximize-window-toggle
+	    "W-v" 'maximize-window-vertically-toggle
+	    "W-h" 'maximize-window-horizontally-toggle)
+
+(define term-keymap (make-keymap))
+( bind-keys term-keymap
+	    "y" '( jump-or-exec "xtermMplayer" "xterm -title xtermMplayer" t ))
+
+(define emacs-keymap (make-keymap))
+( bind-keys emacs-keymap
+	    "a" '( jump-or-exec "Aptitude" "xterm -title Aptitude -e 'sudo aptitude'" )
+	    "o" '( jump-or-exec "Org Agenda" "emacsclient -c -e '(org-agenda-list)'" t )
+	    "o" '( jump-or-exec "Org Agenda" "emacsclient -c -e '(org-agenda-list)'" t )
+	    "b" '( jump-or-exec "UC Berkeley Mail" "chromium --new-window http://bmail.berkeley.edu" t )
+	    "m" '( jump-or-exec "\\*Man" "emacsclient -c -e '(call-interactively (quote man))'" t )
+	    "c" '( jump-or-exec "Google Calendar" "chromium --new-window http://calendar.google.com" t ))
+
+( bind-keys global-keymap
+	    "W-S-e" emacs-keymap)
+
+
+(setq grow-is-maximize nil)
+( bind-keys window-keymap
+	    "W-m" max-keymap
+	    "W-`" 'popup-window-menu
+	    "W-S-Up" 'pack-window-up
+	    "W-S-Down" 'pack-window-down
+	    "W-S-Left" 'pack-window-left
+	    "W-S-Right" 'pack-window-right
+	    "W-M-S-Up" 'move-window-up
+	    "W-M-S-Down" 'move-window-down
+	    "W-M-S-Left" 'move-window-left
+	    "W-M-S-Right" 'move-window-right
+	    "W-C-Up" 'grow-window-up
+	    "W-C-Down" 'grow-window-down
+	    "W-C-Left" 'grow-window-left
+	    "W-C-Right" 'grow-window-right
+	    "W-M-Up" 'shrink-window-up
+	    "W-M-Down" 'shrink-window-down
+	    "W-M-Left" 'shrink-window-left
+	    "W-M-Right" 'shrink-window-right
+	    "W-Prior" 'raise-window
+	    "W-Next" 'lower-window
+	    "W-C-Prior" 'raise-window-depth
+	    "W-C-Next" 'lower-window-depth
+	    "W-Button3-Move" 'resize-window-interactively
+	    "W-Button1-Move" 'move-window-interactively
+	    "W-Button1-Click2" 'maximize-window-toggle
+	    "W-Button3-Click2" '(window-put (input-focus) 'opacity ())
+	    "W-Button4-Click" '(opacity-increment (input-focus) 5)
+	    "W-Button5-Click" '(opacity-increment (input-focus) -5)
+	    ;; "W-Button4-Click" '(system "transset -p --inc 0.1 &")
+	    ;; "W-Button5-Click" '(system "transset -p --dec 0.1 &")
+	    "M-F4" 'delete-window
+	    )
+
+(define (opacity-increment window inc)
+  "Increment opacity of WINDOW by INC"
+  (define (get-opacity w)
+    (* (/ 4294967294.00 100) w))
+  (let* ((opacity (or (window-get window 'opacity) 100))
+	 (newopacity (min (max (+ opacity inc) 0) 100)))
+    (window-put window 'opacity newopacity)
+    (set-x-property (window-frame-id window) '_NET_WM_WINDOW_OPACITY (make-vector 1 (get-opacity newopacity)) 'CARDINAL 32)
+    (sync-server)))
+
+(define (lockscreen)
+  "Lock the screen"
+  ( system "i3lock -d -c 008b8b &" ))
+(define-command 'lockscreen lockscreen)
+
+;; How do I temporarily set cycle-all-workspaces to t?
+(define (blah whatever)
+  ( display-message (prin1-to-string  whatever)))
+(define-command 'blah-command blah #:spec "e")
+
+;; (apply-command 'blah-command (lookup-event "W-z"))
+
+( bind-keys global-keymap
+	    "W-z"   'blah-command)
+
+
+
+;; (define-cycle-command-pair
+;;   'cycle-blah 'cycle-blah-backwards
+;;   (lambda (w)
+;;     ( display-message (prin1-to-string current-prefix-arg))
+;;     (delete-if-not window-in-cycle-p (windows-in-group w)))
+;;   #:spec "%W")
+
+
+;; (setq cycle-all-workspaces nil)
+;; ( bind-keys global-keymap
+;; 	    "W-C-TAB"   'cycle-blah)
+
+( bind-keys global-keymap
+  "W-c"    '( system "sawfish-config &" )
+  "C-W-e"   'display-errors
+  "C-W-r"   'restart
+  "C-W-q"   'quit
+  "C-W-a"   'view-clipboard
+  "W-TAB"   'cycle-windows
+  "W-t"     term-keymap
+  ;; "C-TAB"   'cycle-windows-backwards
+  "C-W-t"   '( system "eject -T /dev/scd0 &" )
+  "W-l"   'lockscreen
+  "W-M-S-l"   '(system "~/.sawfish/scripts/fingerprint-lock.sh &")
+  "W-S-l"   '(system "~/.sawfish/scripts/fingerprint-xtrlock.sh &")
+  "W-M-l"   '(system "xtrlock &")
+  "XF86ScreenSaver"   'lockscreen
+  "W-S-m"  'popup-apps-menu
+  ;; "C-Menu"  'popup-root-menu
+  ;; "S-Menu"  'popup-apps-menu
+  "C-W-x"   '( system "xkill &" )
+  "C-W-d"   'show-desktop
+  "C-S-d"   'hide-desktop
+  "C-S-i"   'iconify-all-windows
+  "C-S-q"   'close-all-windows
+  ;; "Print"   '( system "import -border window.png &" )
+  ;; "C-Print" '( system "import -window root root.png &" )
+  ;; "W-F2"    `( jump-or-exec "Gnome-run-dialog" "gnome-run-dialog" t )
+  ;; "W-F6"    `( jump-or-exec "Geeqie" "geeqie" nil )
+  "W-r"     '( system "chromium &" )
+  "W-S-r"     '( system "chromium --incognito &" )
+  "W-F7"    `( jump-or-exec "Iceweasel" "iceweasel" t )
+  "W-F8"    `( jump-or-exec "Exaile" "exaile" t )
+  "W-F9"    `( jump-or-exec "Synaptic" "gksu -u root synaptic" nil )
+  "W-F10"   `( jump-or-exec "Geany" "geany" t )
+  "W-F11"   `( jump-or-exec "Glade-3" "glade-3" t )
+  "W-e"   '( system "emacsclient -c -a '' &" t )
+  "W-p"     'popup-window-list-menu
+  "W-Home"    `( jump-or-exec "Home" "nautilus --no-desktop ~" t ) )
+
+
+
+(bind-keys global-keymap
+	   "W-ESC"  '(select-workspace 0)
+	   "W-F1"  '(select-workspace 1)
+	   "W-F2"  '(select-workspace 2)
+	   "W-F3"  '(select-workspace 3)
+	   "W-F4"  '(select-workspace 4))
+
+(setq viewport-boundary-mode 'stop)
+(bind-keys global-keymap
+	   "W-Left"	'(move-viewport -1 0)
+	   "W-Right"	'(move-viewport 1 0)
+	   "W-Down"	'(move-viewport 0 1)
+	   "W-Up"	'(move-viewport 0 -1))
+
+(bind-keys global-keymap
+	   "W-d"	'toggle-desktop)
+
+;; Window Matchers
+
+( add-window-matcher '( ( WM_CLASS . "^Sawfishpager/sawfishpager$" ) )
+       '( ( position . south-east )
+          ( fixed-positon . t )
+          ( never-maximize . t )
+          ( never-iconify . t )
+          ( frame-type . none )
+          ( cycle-skip . t )
+          ( window-list-skip . t )
+          ( sticky . t )
+	  ( avoid . () )		;So we can maximize over this guy
+          ( sticky-viewport . t )
+          ( depth .  16 ) ) )
+
+( add-window-matcher '( ( WM_CLASS . "^Emacs/emacs$" ) )
+       '( ( group . emacs ) ))
+
+
+;; To have my top panel in place
+
+( add-window-matcher '( ( WM_NAME . "^ConkyCPU$" ) )
+       '( ( depth . 16 )
+	  ( window-type . dock) ))
+
+( add-window-matcher '( ( WM_NAME . "^dzenRIGHT$" ) )
+       '( ( depth . -14 )
+	  ( opacity . 100 )) )
+
+( add-window-matcher '( ( WM_NAME . "^stalonetray$" ) )
+       '( ( depth . -16 )
+	  ( opacity . 100 )) )
+
+( add-window-matcher '( ( WM_NAME . "^dzenLEFT$" ) )
+       '( ( depth . -14 )
+	  ( opacity . 100) ))
+
+(require 'subdivide)
+(bind-keys global-keymap
+	   "W-C-S-Left" 'half-window-left
+	   "W-C-S-Right" 'half-window-right
+	   "W-C-S-Up" 'half-window-up
+	   "W-C-S-Down" 'half-window-down)
+
+;; I keep confusing Emacs's "search" and Chromium's "save"
+;; (add-window-matcher
+;;  '((WM_NAME . "Chromium"))
+;;  '((keymap-trans . (("C-s" "C-f")))))
+
+(define (startup-stuff)
+  "Some applications I set up after initialization."
+  (system "~/.sawfish/scripts/startup-scripts.sh &"))
+
+(add-hook 'after-initialization-hook startup-stuff)
+
+;; stalonetray -bg "black" --geometry 10x1-0+0 --grow-gravity W --icon-gravity NE --icon-size 16 --dockapp-mode simple
+;; synclient VertEdgeScroll=1
+
+;; trayer --edge top --align right --SetDockType true --SetPartialStrut true  --expand true --width 10 --transparent true --tint 0x191970 --height 14
+;; (window-plist (get-window-by-class "trayer"))
+
+;; Example Tiling configuration in Sawfish's resource file
+;; (require 'sawfish.wm.tile.tile)
+;; (tall-tiling 1 #:width 1.75 #:top 14 #:bottom 0 #:gap 3 #:max 5 #:right nil #:resize t)
+;; (tall-tiling 2 #:width 1.75 #:top 14 #:bottom 0 #:gap 3 #:max 5 #:right nil #:resize t
+;; 	     #:master (lambda (win) (not (string-match "^xterm$" (window-name win)))) )
+
+;; (col-tiling 0 #:top 0 #:bottom 0 #:gap 3 #:cols 3 #:resize t)
+
+(bind-keys global-keymap
+	   "C-M-Right" 'tall-rotate-right
+	   "C-M-Left" 'tall-rotate-left
+	   "M-=" 'increase-max-windows
+	   "M--" 'decrease-max-windows
+	   "W-t" 'next-tiling)
+
+;; Get the password
+;; The file is of the form "MPD_HOST=PASS@localhost " with no newline
+(setq mpdpassfile "~/.sawfish/mpdpassword")
+(setq mpdpass
+      (if (file-exists-p mpdpassfile)
+	  (let* ((file (open-file mpdpassfile 'read))
+		 (pass (read-line file)))
+	    (close-file file)
+	    pass)
+	nil))
+
+(define (play-mplayer-or-mpd)
+  "If there's an MPlayer, toggle it, other wise play MPD."
+  (let ((win (get-window-by-name "MPlayer")))
+    (if win
+	(synthesize-event "SPACE" win)
+      (system (concat mpdpass "mpc toggle &")))))
+(define-command 'play-mplayer-or-mpd play-mplayer-or-mpd)
+
+(define (next-mplayer-or-mpd)
+  "If there's an MPlayer, skip to the next video.
+  Otherwise, skip to the next MPD song."
+  (let ((win (get-window-by-name "MPlayer")))
+    (if win
+	(synthesize-event ">" win)
+      (system (concat mpdpass "mpc next &")))))
+(define-command 'next-mplayer-or-mpd next-mplayer-or-mpd)
+
+(define (prev-mplayer-or-mpd)
+  "If there's an MPlayer, go to the previous video.
+  Otherwise, go to the previous MPD song."
+  (let ((win (get-window-by-name "MPlayer")))
+    (if win
+	(synthesize-event "<" win)
+      (system (concat mpdpass "mpc prev &")))))
+(define-command 'prev-mplayer-or-mpd prev-mplayer-or-mpd)
+
+(define (mplayer-or-mpd-ff)
+  "If there's an MPlayer, fast forward 10 seconds
+  Otherwise, fast forward the MPD song."
+  (let ((win (get-window-by-name "MPlayer")))
+    (if win
+	(synthesize-event "Right" win)
+      (system (concat mpdpass "mpc seek +00:00:10 &")))))
+(define-command 'mplayer-or-mpd-ff mplayer-or-mpd-ff)
+
+(define (mplayer-or-mpd-rw)
+  "If there's an MPlayer, rewind 10 seconds
+  Otherwise, rewind the MPD song."
+  (let ((win (get-window-by-name "MPlayer")))
+    (if win
+	(synthesize-event "Left" win)
+      (system (concat mpdpass "mpc seek -00:00:10 &")))))
+(define-command 'mplayer-or-mpd-rw mplayer-or-mpd-rw)
+
+(define (mplayer-speed-up)
+  "Speed up mplayer"
+  (let ((win (get-window-by-name "MPlayer")))
+    (if win
+	(synthesize-event "]" win))))
+(define-command 'mplayer-speed-up mplayer-speed-up)
+
+(define (mplayer-slow-down)
+  "Slow down mplayer"
+  (let ((win (get-window-by-name "MPlayer")))
+    (if win
+	(synthesize-event "[" win))))
+(define-command 'mplayer-slow-down mplayer-slow-down)
+
+(define (mplayer-normal-speed)
+  "Normal speed mplayer"
+  (let ((win (get-window-by-name "MPlayer")))
+    (if win
+	(synthesize-event "BackSpace" win))))
+(define-command 'mplayer-normal-speed mplayer-normal-speed)
+
+;; Volume keybindings
+(bind-keys global-keymap
+	   "W-]" '(system "amixer set Master 2%+ &")
+	   "W-[" '(system "amixer set Master 2%- &")
+	   "W-{" 'mplayer-or-mpd-rw
+	   "W-}" 'mplayer-or-mpd-ff
+	   "W-C-]" 'mplayer-speed-up
+	   "W-C-[" 'mplayer-slow-down
+	   "W-C-BackSpace" 'mplayer-normal-speed
+	   "XF86AudioRaiseVolume" '(system "amixer set Master 2%+ &")
+	   "XF86AudioLowerVolume" '(system "amixer set Master 2%- &")
+	   "XF86AudioPlay" 'play-mplayer-or-mpd
+	   "XF86AudioPrev" 'prev-mplayer-or-mpd
+	   "XF86AudioNext" 'next-mplayer-or-mpd
+	   "W-n" `(jump-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t))
+
+(bind-keys global-keymap
+	   "XF86MonBrightnessUp" '(system "xbacklight -inc 10% &")
+	   "XF86MonBrightnessDown" '(system "xbacklight -dec 10% &"))
+
+(bind-keys global-keymap
+	   "XF86Launch1" '(system "mplayer -fs ~/video/NitoriGetDown.mp4 &"))
+
+(setq move-lock-when-maximized nil)
+
+;; (let ((win (get-window-by-class "XTerm")))
+;;   (move-window-to-workspace win)
+;;   (move-window-to-current-viewport win)
+
+(require 'sawfish.wm.ext.pager)
+(add-hook 'after-initialization-hook pager t)
+
+(require 'dictator-scratch)
+(require 'test-screenshot)
+(require 'josh-window)
+(require 'josh-wallpaper)
+
+(require 'sawfish.wm.ext.cabinet)
+(bind-keys global-keymap "W-s" 'cabinet-switch)
+(nconc cabinet-filter-out-for-display-list
+       '("^dzenLEFT$" "^dzenRIGHT$" "^stalonetray" "^ConkyCPU$" "^sawfishpager$"))
+
+(bind-keys title-keymap
+	   "Button3-Click" 'popup-window-ops-menu
+	   "Button1-Click2" 'iconify-window)
+
+;; Todo:
+;; Automatically launch trayer with:
+;;  nm-applet
+;;  linphone?
+;;  notification-daemon
+;; DONE!
+
+;; (require 'sawfish.wm.prg.xmobar)
+;; (setq init-xmobar t)
+;; (start-xmobar)
+
+;; Local Variables:
+;; mode:sawfish
+;; End:
