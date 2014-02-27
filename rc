@@ -193,6 +193,11 @@
        '( ( depth . -14 )
 	  ( opacity . 100) ))
 
+(require 'josh-expand)
+(bind-keys global-keymap
+	    "W-C-Button4-Click" '(expand-all 5)
+	    "W-C-Button5-Click" '(expand-all -5))
+
 (require 'subdivide)
 (bind-keys global-keymap
 	   "W-C-S-Left" 'half-window-left
