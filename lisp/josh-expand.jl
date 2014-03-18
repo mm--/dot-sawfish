@@ -13,8 +13,10 @@
 ;; 
 ;; Here's an example configuration:
 ;; (bind-keys global-keymap
-;; 	    "W-C-Button4-Click" '(expand-all 5)
-;; 	    "W-C-Button5-Click" '(expand-all -5))
+;; 	   "W-C-Button4-Click" '(expand-window (input-focus) 5)
+;; 	   "W-C-Button5-Click" '(expand-window (input-focus) -5)
+;; 	   "W-S-C-Button4-Click" '(expand-all 5)
+;; 	   "W-S-C-Button5-Click" '(expand-all -5))
 
 
 
