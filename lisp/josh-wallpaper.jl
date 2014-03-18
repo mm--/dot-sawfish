@@ -11,8 +11,8 @@
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/bridge.png" 0)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/isle-of-sky.png" 1)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/2048.png" 2)
-(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/q5xyMAw.png" 3)
-(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/Xdizu.png" 4)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/iceland.png" 3)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/YzbQWzH.png" 4)
 
 (define (josh-wallpaper-change)
   (let ((wallpaper (cdr (assoc current-workspace josh-wallpaper))))
