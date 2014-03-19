@@ -36,8 +36,10 @@
     ()
     ("_Dictator" dictator-paste)
     ("Dictator _popup" dictator-popup-and-shrink)
-    ("_youtube player" ( system "~/.sawfish/scripts/youtube-mplayer.sh &" ))
-    ("_Youtube medium" ( system "~/.sawfish/scripts/youtube-mplayer-med.sh &" ))
+    ("_Youtube player" ( system "~/.sawfish/scripts/youtube-mplayer.sh &" ))
+    ("Youtube _medium" ( system "~/.sawfish/scripts/youtube-mplayer.sh -m &" ))
+    ("Youtube Dow_nload" ( system "~/.sawfish/scripts/youtube-mplayer.sh -d &" ))
+    ("Youtu_be download medium" ( system "~/.sawfish/scripts/youtube-mplayer.sh -m -d &" ))
     ))
 
 (define read-keymap (make-keymap))
