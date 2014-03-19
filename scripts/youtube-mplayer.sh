@@ -20,9 +20,10 @@ if [ -n "$DOWNLOAD" ]; then
 fi
 
 USERAGENT=$(youtube-dl --dump-user-agent)
+TITLE=$(youtube-dl -e "$YTURL")
 URL=$(youtube-dl --cookies=/tmp/ytcookie.txt $OTHERARGS -g "$YTURL")
 if [ -n "$DOWNLOAD" ] || echo "$URL" | grep "https"; then
-    wget --load-cookies /tmp/ytcookie.txt -U "$USERAGENT" "$URL" -O - | tee "$SAVELOC" | mplayer -fixed-vo -geometry -0-0 -cache 8192 -
+    wget --load-cookies /tmp/ytcookie.txt -U "$USERAGENT" "$URL" -O - | tee "$SAVELOC" | mplayer -fixed-vo -geometry -0-0 -cache 8192 -title "$TITLE" -
 else
-    mplayer -fixed-vo -geometry -0-0 -cookies -cookies-file /tmp/ytcookie.txt -user-agent "$USERAGENT" "$URL"
+    mplayer -fixed-vo -geometry -0-0 -cookies -cookies-file /tmp/ytcookie.txt -user-agent "$USERAGENT" -title "$TITLE" "$URL"
 fi
