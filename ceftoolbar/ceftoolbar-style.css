@@ -1,0 +1,17 @@
+body {
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    font-size: small;
+    margin:1px;
+    padding:0;
+}
+
+#time {
+    color: grey;
+    font-weight: bolder;
+}
+
+.right {
+    float: right;
+}
