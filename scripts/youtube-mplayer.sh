@@ -16,8 +16,9 @@ done
 YTURL=$(xclip -o)
 echo Downloading from url $YTURL
 
+OUTPUT=$(youtube-dl -g -e -o "$STRTEMP" --cookies=/tmp/ytcookie.txt $OTHERARGS --get-filename -v "$YTURL")
 if [ -n "$DOWNLOAD" ]; then
-   SAVELOC=$(youtube-dl -o "$STRTEMP" $OTHERARGS --get-filename "$YTURL")
+   SAVELOC=$(echo "$OUTPUT" | sed -n '3p')
    echo Saving in location $SAVELOC
 fi
 
@@ -25,11 +26,11 @@ echo Getting user agent
 USERAGENT=$(youtube-dl --dump-user-agent)
 echo User agent is $USERAGENT
 echo Getting title
-TITLE=$(youtube-dl -e "$YTURL")
-echo Title is $TITLE
+TITLE=$(echo "$OUTPUT" | sed -n '1p')
+echo Title: $TITLE
 echo Getting download URL
-URL=$(youtube-dl --cookies=/tmp/ytcookie.txt $OTHERARGS -g "$YTURL")
-echo Download URL is $URL
+URL=$(echo "$OUTPUT" | sed -n '2p')
+echo URL: $URL
 if [ -n "$DOWNLOAD" ] || echo "$URL" | grep "https"; then
     echo "Using wget"
     wget --load-cookies /tmp/ytcookie.txt -U "$USERAGENT" "$URL" -O - | tee "$SAVELOC" | mplayer -fixed-vo -geometry -0-0 -cache 8192 -title "$TITLE" -
