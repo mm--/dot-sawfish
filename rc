@@ -102,8 +102,8 @@
 ( bind-keys global-keymap
   "W-c"    '( system "sawfish-config &" )
   "C-W-e"   'display-errors
-  "C-W-r"   'restart
-  "C-W-q"   'quit
+  ;; "C-W-r"   'restart
+  ;; "C-W-q"   'quit
   "C-W-a"   'view-clipboard
   "W-TAB"   'cycle-windows
   "W-t"     term-keymap
@@ -128,25 +128,31 @@
   ;; "W-F6"    `( jump-or-exec "Geeqie" "geeqie" nil )
   "W-r"     '( system "chromium &" )
   "W-S-r"     '( system "chromium --incognito &" )
-  "W-F7"    `( jump-or-exec "Iceweasel" "iceweasel" t )
-  "W-F8"    `( jump-or-exec "Exaile" "exaile" t )
-  "W-F9"    `( jump-or-exec "Synaptic" "gksu -u root synaptic" nil )
-  "W-F10"   `( jump-or-exec "Geany" "geany" t )
-  "W-F11"   `( jump-or-exec "Glade-3" "glade-3" t )
+  "W-f"     '( system "firefox &" )
   "W-e"   '( system "emacsclient -c -a '' &" t )
   "W-p"     'popup-window-list-menu
   "W-Home"    `( jump-or-exec "Home" "nautilus --no-desktop ~" t ) )
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bind workspaces to keys
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (make-list i stop)
+  (if (> i stop) '()
+    (cons i (make-list (+ i 1) stop))))
+
+(define (bind-workspace i)
+  (bind-keys global-keymap
+	     (concat "W-F" (number->string i))
+	     (list 'select-workspace i)))
+
+(mapc bind-workspace (make-list 1 12))
 
 (bind-keys global-keymap
-	   "W-ESC"  '(select-workspace 0)
-	   "W-F1"  '(select-workspace 1)
-	   "W-F2"  '(select-workspace 2)
-	   "W-F3"  '(select-workspace 3)
-	   "W-F4"  '(select-workspace 4))
+	   "W-ESC"  '(select-workspace 0))
 
-(setq viewport-boundary-mode 'stop)
+(setq viewport-boundary-mode 'dynamic)
 (bind-keys global-keymap
 	   "W-Left"	'(move-viewport -1 0)
 	   "W-Right"	'(move-viewport 1 0)
@@ -182,10 +188,12 @@
 	  ( window-type . dock) ))
 
 ( add-window-matcher '( ( WM_NAME . "^ceftoolbar$" ) )
-       '( ( depth . 16 )
+       '( ( depth . -14 )
 	  ( position . north-west )
 	  ( opacity . 100 )
-	  ( avoid . #t)
+	  ( dock-type . t )
+	  ( avoid . t)
+	  ( ignored . t)
           ( fixed-positon . t )))
 
 
