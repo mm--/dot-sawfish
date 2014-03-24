@@ -181,6 +181,14 @@
        '( ( depth . 16 )
 	  ( window-type . dock) ))
 
+( add-window-matcher '( ( WM_NAME . "^ceftoolbar$" ) )
+       '( ( depth . 16 )
+	  ( position . north-west )
+	  ( opacity . 100 )
+	  ( avoid . #t)
+          ( fixed-positon . t )))
+
+
 ( add-window-matcher '( ( WM_NAME . "^dzenRIGHT$" ) )
        '( ( depth . -14 )
 	  ( opacity . 100 )) )

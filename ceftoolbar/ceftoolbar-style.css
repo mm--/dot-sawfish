@@ -1,3 +1,7 @@
+html {
+    overflow-y: hidden;
+}
+
 body {
     background-color: black;
     color: white;
@@ -15,3 +19,48 @@ body {
 .right {
     float: right;
 }
+
+#progBar {
+    width: 30px;
+    height: 10px;
+}
+
+#mpdartist, #mpdtitle {
+    font-size: x-small;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.content {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    height: 10px;
+    overflow: visible;
+    /* top: 0; */
+    /* left: 0; */
+    /* float: left; */
+}
+
+#mpdstat {
+    font-size: x-small;
+}
+
+.content svg{
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+#mpdalbum, #wifi {
+    display: none;
+}
+
+.line {
+  fill: none;
+  stroke: #00F;
+  stroke-width: 2.5px;
+}
+ 

@@ -28,6 +28,7 @@ import re
 import uuid
 import platform
 import gtk                      # For sticky setting
+import subprocess, select, sys
 
 # Which method to use for message loop processing.
 #   EVT_IDLE - wx application has priority (default)
@@ -117,12 +118,13 @@ def test_two(frame):
 class MainFrame(wx.Frame):
     browser = None
     mainPanel = None
-    width = 1400
+    width = 1450
+    height = 16
     def __init__(self):
         wx.Frame.__init__(self, parent=None, id=wx.ID_ANY,
                           pos = (9000, 9000),
                           style= wx.BORDER_NONE |  wx.FRAME_NO_TASKBAR,
-                          title='ceftoolbar2', size=(self.width,16))
+                          title='ceftoolbar', size=(self.width,self.height))
 
         # Cannot attach browser to the main frame as this will cause
         # the menu not to work.
@@ -132,7 +134,7 @@ class MainFrame(wx.Frame):
         # self.mainPanel = wx.Panel(self, style=wx.WANTS_CHARS)
         # self.mainPanel = wx.Panel(self, style=wx.WANTS_CHARS)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        self.mainPanel = wx.Panel(self, size=(self.width,18), style=wx.BORDER_RAISED)
+        self.mainPanel = wx.Panel(self, size=(self.width,self.height+2), style=wx.BORDER_RAISED)
         # self.mainPanel = wx.Panel(self, size=(500,500), style=wx.BORDER_RAISED)
         sizer.Add(self.mainPanel, flag = wx.EXPAND | wx.ALL, proportion=0, border=-1)
         self.SetSizer(sizer)
@@ -219,6 +221,10 @@ class JavascriptExternal:
                 jsCallback.GetFrame().GetIdentifier())
         hey = hey + "BB"
         jsCallback.Call("This message was sent from python using js callback" + hey)
+
+    def updateCallback(self, jsCallback):
+        global remember
+        jsCallback.Call(remember)
 
     def TestJSCallbackComplexArguments(self, jsObject):
         jsCallback = jsObject["myCallback"];
@@ -479,8 +485,8 @@ class ClientHandler:
         print("error code = %s" % errorCode)
         print("error text = %s" % errorTextList[0])
         print("failed url = %s" % failedUrl)
-        customErrorMessage = "My custom error message!"
-        frame.LoadUrl("data:text/html,%s" % customErrorMessage)
+        # customErrorMessage = "My custom error message!"
+        # frame.LoadUrl("data:text/html,%s" % customErrorMessage)
 
     def OnRendererProcessTerminated(self, browser, status):
         print("LoadHandler::OnRendererProcessTerminated()")
@@ -510,6 +516,48 @@ class ClientHandler:
         allowPopups = True
         return not allowPopups
 
+class PipeTracker:
+    def __init__(self, mainBrowser):
+        self.mainBrowser = mainBrowser
+        conky = subprocess.Popen(['/home/jm3/.sawfish/scripts/conky-ceftoolbar.sh'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        fifo = subprocess.Popen(['/home/jm3/.sawfish/scripts/replace-listen-fifo.sh', '0.1'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        processes = [conky, fifo]
+        self.fdtoprocess = dict([(x.stdout.fileno(), x.stdout) for x in processes])
+        self.poll = select.poll()
+        for x in processes:
+            self.poll.register(x.stdout,select.POLLIN | select.POLLHUP)
+        self.pollc = len(processes)
+
+
+    def handleEvents(self):
+        if self.pollc > 0: 
+            events = self.poll.poll(100)
+        for event in events:
+            (rfd,event) = event
+            if event & select.POLLIN:
+                line = self.fdtoprocess[rfd].readline().rstrip()
+                if line_handler(line):
+                    self.mainBrowser.GetMainFrame().ExecuteFunction("callUpdate")
+                    self.mainBrowser.GetMainFrame().ExecuteFunction("nextPoint", remember["CPU"])
+            if event & select.POLLHUP:
+                self.poll.unregister(rfd)
+                self.pollc = self.pollc - 1
+
+
+remember = {}
+
+def line_handler(line):
+    """Take a line. If it's not a REPLACE then remember it. Output to
+stdout if it's a FLUSH"""
+    m = re.match(r"^(.*?):(.*)$", line)
+    if m:
+        command, rest = m.group(1,2)
+        if command == "UPDATE":
+            return True
+        else:
+            remember[command] = rest
+    return False
+
 
 class MyApp(wx.App):
     timer = None
@@ -517,9 +565,10 @@ class MyApp(wx.App):
     timerCount = 0
 
     def OnInit(self):
+        frame = MainFrame()
+        self.myTracker = PipeTracker(frame.browser)
         if not USE_EVT_IDLE:
             self.CreateTimer()
-        frame = MainFrame()
         self.SetTopWindow(frame)
         test_two(frame)
         frame.Show()
@@ -534,12 +583,13 @@ class MyApp(wx.App):
         # Another approach is to use EVT_IDLE in MainFrame,
         # see which one fits you better.
         self.timer = wx.Timer(self, self.timerID)
-        self.timer.Start(10) # 10ms
+        self.timer.Start(2) # 10ms
         wx.EVT_TIMER(self, self.timerID, self.OnTimer)
 
     def OnTimer(self, event):
         self.timerCount += 1
         # print("wxpython.py: OnTimer() %d" % self.timerCount)
+        self.myTracker.handleEvents()
         cefpython.MessageLoopWork()
 
     def OnExit(self):
