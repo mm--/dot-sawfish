@@ -8,11 +8,20 @@
   "Set the wallpaper for a workspace"
   (add-to-list josh-wallpaper (cons workspace wallpaper)))
 
-(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/bridge.png" 0)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/DzVsyZE.png" 0)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/isle-of-sky.png" 1)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/2048.png" 2)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/iceland.png" 3)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/YzbQWzH.png" 4)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/3Jccsr6.png" 5)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/k0DyX6Y.png" 6)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/MIpllFc.png" 7)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/ZDCCvIQ.png" 8)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/G5ushKr.png" 9)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/ibFcFuc.png" 10)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/oVwpXLD.png" 11)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/UFeXPN5.png" 12)
+
 
 (define (josh-wallpaper-change)
   (let ((wallpaper (cdr (assoc current-workspace josh-wallpaper))))
