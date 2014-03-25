@@ -18,7 +18,7 @@
     (set-input-focus window)))
 
 (setq josh-hide-list ())
-(defvar josh-junk-workspace 5)
+(defvar josh-junk-workspace 12)
 
 (define (josh-copy-window-to-junk window)
   "Copy to junk workspace."

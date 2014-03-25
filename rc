@@ -55,8 +55,6 @@
 	    "W-Button3-Click2" '(window-put (input-focus) 'opacity ())
 	    "W-Button4-Click" '(opacity-increment (input-focus) 5)
 	    "W-Button5-Click" '(opacity-increment (input-focus) -5)
-	    ;; "W-Button4-Click" '(system "transset -p --inc 0.1 &")
-	    ;; "W-Button5-Click" '(system "transset -p --dec 0.1 &")
 	    "M-F4" 'delete-window
 	    )
 
@@ -75,53 +73,25 @@
   ( system "i3lock -d -c 008b8b &" ))
 (define-command 'lockscreen lockscreen)
 
-;; How do I temporarily set cycle-all-workspaces to t?
-(define (blah whatever)
-  ( display-message (prin1-to-string  whatever)))
-(define-command 'blah-command blah #:spec "e")
-
-;; (apply-command 'blah-command (lookup-event "W-z"))
-
-( bind-keys global-keymap
-	    "W-z"   'blah-command)
-
-
-
-;; (define-cycle-command-pair
-;;   'cycle-blah 'cycle-blah-backwards
-;;   (lambda (w)
-;;     ( display-message (prin1-to-string current-prefix-arg))
-;;     (delete-if-not window-in-cycle-p (windows-in-group w)))
-;;   #:spec "%W")
-
-
-;; (setq cycle-all-workspaces nil)
-;; ( bind-keys global-keymap
-;; 	    "W-C-TAB"   'cycle-blah)
-
 ( bind-keys global-keymap
   "W-c"    '( system "sawfish-config &" )
   "C-W-e"   'display-errors
   ;; "C-W-r"   'restart
   ;; "C-W-q"   'quit
-  "C-W-a"   'view-clipboard
   "W-TAB"   'cycle-windows
+  "W-C-TAB"   'cycle-group
   "W-t"     term-keymap
   ;; "C-TAB"   'cycle-windows-backwards
-  "C-W-t"   '( system "eject -T /dev/scd0 &" )
   "W-l"   'lockscreen
   "W-M-S-l"   '(system "~/.sawfish/scripts/fingerprint-lock.sh &")
   "W-S-l"   '(system "~/.sawfish/scripts/fingerprint-xtrlock.sh &")
   "W-M-l"   '(system "xtrlock &")
   "XF86ScreenSaver"   'lockscreen
   "W-S-m"  'popup-apps-menu
+  "W-w" 'popup-window-list-menu
   ;; "C-Menu"  'popup-root-menu
   ;; "S-Menu"  'popup-apps-menu
-  "C-W-x"   '( system "xkill &" )
-  "C-W-d"   'show-desktop
-  "C-S-d"   'hide-desktop
-  "C-S-i"   'iconify-all-windows
-  "C-S-q"   'close-all-windows
+  "W-S-x"   '( system "dmenu_run &" )
   ;; "Print"   '( system "import -border window.png &" )
   ;; "C-Print" '( system "import -window root root.png &" )
   ;; "W-F2"    `( jump-or-exec "Gnome-run-dialog" "gnome-run-dialog" t )
@@ -130,9 +100,7 @@
   "W-S-r"     '( system "chromium --incognito &" )
   "W-f"     '( system "firefox &" )
   "W-e"   '( system "emacsclient -c -a '' &" t )
-  "W-p"     'popup-window-list-menu
   "W-Home"    `( jump-or-exec "Home" "nautilus --no-desktop ~" t ) )
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bind workspaces to keys
@@ -151,6 +119,22 @@
 
 (bind-keys global-keymap
 	   "W-ESC"  '(select-workspace 0))
+
+
+;; Remember last workspace
+(defvar last-workspace 0)
+
+(define (josh-remember-workspace)
+  (setq last-workspace current-workspace))
+
+(add-hook 'leave-workspace-hook josh-remember-workspace)
+
+(define (josh-pop-last-workspace)
+  (select-workspace last-workspace))
+  
+(bind-keys global-keymap
+	   "W-p" '(josh-pop-last-workspace))
+
 
 (setq viewport-boundary-mode 'dynamic)
 (bind-keys global-keymap
@@ -178,14 +162,16 @@
           ( depth .  16 ) ) )
 
 ( add-window-matcher '( ( WM_CLASS . "^Emacs/emacs$" ) )
-       '( ( group . emacs ) ))
+       '( ( group . Emacs ) ))
 
+
+( add-window-matcher '( ( WM_CLASS . "TopLevelShell" ) )
+		     '( ( group . AFNI ) ))
+
+( add-window-matcher '( ( WM_CLASS . "^AFNI/afni$" ) )
+		     '( ( group . AFNI ) ))
 
 ;; To have my top panel in place
-
-( add-window-matcher '( ( WM_NAME . "^ConkyCPU$" ) )
-       '( ( depth . 16 )
-	  ( window-type . dock) ))
 
 ( add-window-matcher '( ( WM_NAME . "^ceftoolbar$" ) )
        '( ( depth . -14 )
@@ -196,18 +182,9 @@
 	  ( ignored . t)
           ( fixed-positon . t )))
 
-
-( add-window-matcher '( ( WM_NAME . "^dzenRIGHT$" ) )
-       '( ( depth . -14 )
-	  ( opacity . 100 )) )
-
 ( add-window-matcher '( ( WM_NAME . "^stalonetray$" ) )
        '( ( depth . -16 )
 	  ( opacity . 100 )) )
-
-( add-window-matcher '( ( WM_NAME . "^dzenLEFT$" ) )
-       '( ( depth . -14 )
-	  ( opacity . 100) ))
 
 (require 'josh-expand)
 (bind-keys global-keymap
@@ -356,10 +333,6 @@
 
 (setq move-lock-when-maximized nil)
 
-;; (let ((win (get-window-by-class "XTerm")))
-;;   (move-window-to-workspace win)
-;;   (move-window-to-current-viewport win)
-
 (require 'sawfish.wm.ext.pager)
 (add-hook 'after-initialization-hook pager t)
 
@@ -377,16 +350,6 @@
 	   "Button3-Click" 'popup-window-ops-menu
 	   "Button1-Click2" 'iconify-window)
 
-;; Todo:
-;; Automatically launch trayer with:
-;;  nm-applet
-;;  linphone?
-;;  notification-daemon
-;; DONE!
-
-;; (require 'sawfish.wm.prg.xmobar)
-;; (setq init-xmobar t)
-;; (start-xmobar)
 
 ;; Local Variables:
 ;; mode:sawfish
