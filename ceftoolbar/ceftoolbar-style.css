@@ -29,6 +29,10 @@ body {
     font-size: x-small;
 }
 
+#bat {
+    border-bottom: solid 1px red;
+}
+
 .inline {
     display: inline-block;
 }

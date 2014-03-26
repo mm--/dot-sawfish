@@ -9,11 +9,16 @@ function callUpdate() {
 function doUpdate(obj) {
     $("#stuff").text(JSON.stringify(obj));
     $("#cpu").text(obj["CPU"]);
-    $("#cpu").text(obj["CPU"]);
+    coreSet(parseFloat(obj["CPU1"]),
+	    parseFloat(obj["CPU2"]),
+	    parseFloat(obj["CPU3"]),
+	    parseFloat(obj["CPU4"]));
     $("#cpu").css('color', heatmapColour(parseFloat(obj["CPU"])/100));
     $("#ram").text(obj["RAM"]);
     $("#vol").text(obj["VOL"]);
     $("#bat").text(obj["BAT"]);
+    var batcol = obj["BATSTATUS"] == "Charging" ? "green" : "grey";
+    $("#bat").css("border-bottom-color", batcol);
     $("#bat").css('color', heatmapColour(1-(parseFloat(obj["BAT"])/100)));
     $("#wifi").text(obj["WIFI"]);
     $("#wifiup").text(obj["WIFIUP"]);
@@ -109,17 +114,73 @@ window.onload = function() {
 
 };
 
+var coredata = d3.range(4).map(function(x) {return(x * 25);});
+
+function coreSet(cpu1, cpu2, cpu3, cpu4) {
+    coredata = [cpu1, cpu2, cpu3, cpu4];
+}
+
+
+// CPU cores
+var corechart;
+window.addEventListener('load', function() {
+    var w = 5,
+	h = 14;
+
+    var x = d3.scale.linear()
+	.domain([0, 1])
+	.range([0, w]);
+
+    var y = d3.scale.linear()
+	.domain([0, 100])
+	.rangeRound([2, h]);
+
+    corechart = d3.select("#coregraph").append("svg")
+	.attr("class", "chart")
+	.attr("width", w * coredata.length)
+	.attr("height", h);
+
+    drawcore();
+
+    function drawcore() {
+
+	var rect = corechart.selectAll("rect")
+	    .data(coredata);
+
+	rect.enter().insert("rect", "line")
+	    .attr("x", function(d, i) { return x(i) - .5; })
+	    .attr("y", function(d) { return h - y(d) - .5; })
+	    .attr("width", w - 2 )
+	    .attr("height", function(d) { return y(d); })
+	    .attr("fill", function(d) { return heatmapColour(d/100.0); })
+	    .transition()
+	    .duration(1000)
+	    .attr("x", function(d, i) { return x(i) - .5; });
+
+	rect.transition()
+	    .duration(1000)
+	    .attr("fill", function(d) { return heatmapColour(d/100.0); })
+	    .attr("y", function(d) { return h - y(d) - .5; })
+	    .attr("height", function(d) { return y(d); });
+
+	rect.exit().transition()
+	    .duration(1000)
+	    .remove();
+
+    }
+
+    setInterval(function() {
+	drawcore();
+	d3.timer.flush(); // avoid memory leak when in background tab
+    }, 1500);
+
+});
+
 var netgraph;
 
 var nt = 0;
 var netdata = d3.range(33).map(function(x) {return(x*2);});
 var netdataup = d3.range(33).map(function(x) {return(x);});
-
-// var colours = ["#00ff00", "#FFFF00", "#FFA500", "#FF0000", "#FF0000"];
-
-// var heatmapColour = d3.scale.linear()
-//   .domain(d3.range(0, 1, 1.0 / (colours.length - 1)))
-//   .range(colours);
 
 function netUpdate(down, up) {
     netdata.shift();
@@ -184,18 +245,13 @@ window.addEventListener('load', function() {
     tick();
 
     function tick() {
-	
-	// push a new data point onto the back
-	// var random = d3.random.normal(50, 100);
-	// netUpdate(random(), random());
-	
 	// redraw the line, and slide it to the left
 	y.domain([0, d3.max(netdataup.concat(netdata).concat([10]))]);
 	path
 	    .attr("d", line)
 	    .attr("transform", null)
 	    .transition()
-	    .duration(500)
+	    .duration(0)
 	    .ease("linear")
 	    .attr("transform", "translate(" + x(-1) + ",0)")
 	    .each("end", tick);
@@ -204,27 +260,11 @@ window.addEventListener('load', function() {
 	    .attr("d", line)
 	    .attr("transform", null)
 	    .transition()
-	    .duration(500)
+	    .duration(0)	// TODO: Fix duration for smoother easing
 	    .ease("linear")
 	    .attr("transform", "translate(" + x(-1) + ",0)")
 	    .each("end", tick);
 	
     }
-
-    // redrawLine();
-
-    // function redrawLine() {
-
-
-    // 	var city = netgraph.selectAll("path")
-    // 	    .data(netdata);
-
-
-    // 	city.append("path")
-    // 	    .attr("class", "line")
-    // 	    .attr("d", function(d) { return line(d.values); })
-    // 	    .style("stroke", function(d) { return "#ff00ff"; });
-
-    // }
 
 });
