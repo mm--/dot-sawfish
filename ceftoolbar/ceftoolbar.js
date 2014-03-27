@@ -25,13 +25,12 @@ function doUpdate(obj) {
     $("#wifidown").text(obj["WIFIDOWN"]);
     netUpdate(parseFloat(obj["WIFIDOWN"]), parseFloat(obj["WIFIUP"]));
     $("#task").text(obj["TASK"]);
-    $("#mpdstat").text(obj["MPDSTAT"]);
     $("#mpdalbum").text(obj["MPDALBUM"]);
     $("#mpdartist").text(obj["MPDARTIST"]);
     $("#mpdtitle").text(obj["MPDTITLE"]);
-    var elapsed = moment.duration("00:" + obj["MPDELAPSED"]).asMinutes();
-    var length = moment.duration("00:" + obj["MPDLENGTH"]).asMinutes();
-    $("#progBar").val(elapsed/length);
+    var elapsed = moment.duration("00:" + obj["MPDELAPSED"]).asMilliseconds();
+    var length = moment.duration("00:" + obj["MPDLENGTH"]).asMilliseconds();
+    updateProg(elapsed, length, obj["MPDSTAT"]);
 };
 
 var t = 9001,
@@ -133,7 +132,7 @@ window.addEventListener('load', function() {
 
     var y = d3.scale.linear()
 	.domain([0, 100])
-	.rangeRound([2, h]);
+	.rangeRound([1, h]);
 
     corechart = d3.select("#coregraph").append("svg")
 	.attr("class", "chart")
@@ -175,6 +174,82 @@ window.addEventListener('load', function() {
     }, 1500);
 
 });
+
+// MPD progress
+var mpdprog;
+var updateProg;
+window.addEventListener('load', function() {
+    var w = 14,
+	h = 14,
+	tau = 2 * Math.PI;
+
+    var arc = d3.svg.arc()
+	.innerRadius(4)
+	.outerRadius(7)
+	.startAngle(0);
+
+    // Actually just a circle.
+    var iarc = d3.svg.arc()
+	.innerRadius(0)
+	.outerRadius(2)
+	.startAngle(0);
+
+    var x = d3.scale.linear()
+	.domain([0, 1])
+	.range([0, w]);
+
+    var y = d3.scale.linear()
+	.domain([0, 100])
+	.rangeRound([1, h]);
+
+    mpdprog = d3.select("#mpdprog").append("svg")
+	.attr("class", "chart")
+	.attr("width", w)
+	.attr("height", h)
+    	.append("g")
+	.attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
+
+    var background = mpdprog.append("path")
+	.datum({endAngle: tau})
+	.style("fill", "#ddd")
+	.attr("d", arc);
+
+    // Add the foreground arc in orange, currently showing 12.7%.
+    var foreground = mpdprog.append("path")
+	.datum({endAngle: .127 * tau})
+	.style("fill", "blue")
+	.attr("d", arc);
+
+    var innerarc = mpdprog.append("circle")
+	.style("fill", "#ddd");
+
+    updateProg = function(elapsed, length, status) {
+	if(elapsed > 0) {
+	var amount = elapsed/length;
+	foreground.datum({endAngle: amount * tau});
+	foreground.transition()
+	    .duration(length - elapsed)
+		.call(arcTween, 1 * tau);
+	}
+	var newcolor = (status == "Playing") ? "black" : "#ddd";
+	var newrad = (status == "Stopped") ? 8 : 3;
+	innerarc.transition()
+	    .duration(1000)
+	    .attr("r", newrad)
+	    .style("fill", newcolor);
+    };
+
+    function arcTween(transition, newAngle) {
+	transition.attrTween("d", function(d) {
+	    var interpolate = d3.interpolate(d.endAngle, newAngle);
+	    return function(t) {
+		d.endAngle = interpolate(t);
+		return arc(d);
+	    };
+	});
+    }
+});
+
 
 var netgraph;
 
