@@ -12,7 +12,7 @@ body {
 }
 
 #time {
-    color: grey;
+    color: lightgrey;
     font-weight: bolder;
 }
 
@@ -60,6 +60,12 @@ body {
 
 #mpdalbum, #wifi {
     display: none;
+}
+
+#logalert {
+    display: none;
+    color: pink;
+    font-size: x-small;
 }
 
 .line {

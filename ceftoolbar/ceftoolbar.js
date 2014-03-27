@@ -1,5 +1,5 @@
 function updateTime() {
-    $("#time").text(moment().format('MMM Do YYYY, h:mm:ss a'));
+    $("#time").text(moment().format('MMM Do YYYY, HH:mm:ss'));
 };
 
 function callUpdate() {
@@ -14,24 +14,42 @@ function doUpdate(obj) {
 	    parseFloat(obj["CPU3"]),
 	    parseFloat(obj["CPU4"]));
     $("#cpu").css('color', heatmapColour(parseFloat(obj["CPU"])/100));
+    $("#cputop").text(obj["CPUTOP"]);
     $("#ram").text(obj["RAM"]);
     $("#vol").text(obj["VOL"]);
     $("#bat").text(obj["BAT"]);
     var batcol = obj["BATSTATUS"] == "Charging" ? "green" : "grey";
+    batcol = (obj["BATSTATUS"] == "Full") ? "lightgreen" : batcol;
+    var batstyle = (obj["BATSTATUS"] == "Charging" ||
+		    obj["BATSTATUS"] == "Full")
+		    ? "solid" : "none";
     $("#bat").css("border-bottom-color", batcol);
+    $("#bat").css("border-bottom-style", batstyle);
     $("#bat").css('color', heatmapColour(1-(parseFloat(obj["BAT"])/100)));
     $("#wifi").text(obj["WIFI"]);
     $("#wifiup").text(obj["WIFIUP"]);
     $("#wifidown").text(obj["WIFIDOWN"]);
+    $("#connections").text(obj["CONNECTIONS"]);
     netUpdate(parseFloat(obj["WIFIDOWN"]), parseFloat(obj["WIFIUP"]));
     $("#task").text(obj["TASK"]);
     $("#mpdalbum").text(obj["MPDALBUM"]);
     $("#mpdartist").text(obj["MPDARTIST"]);
     $("#mpdtitle").text(obj["MPDTITLE"]);
+    if(obj["MPDSTAT"] == "Stopped") {
+	$("#mpdcontainer").fadeOut();
+    } else {
+	$("#mpdcontainer").fadeIn();
+    }
     var elapsed = moment.duration("00:" + obj["MPDELAPSED"]).asMilliseconds();
     var length = moment.duration("00:" + obj["MPDLENGTH"]).asMilliseconds();
     updateProg(elapsed, length, obj["MPDSTAT"]);
 };
+
+function logAlert(line) {
+    $("#logalert").text(line);
+    $("#logalert").fadeIn();
+    $("#logalert").delay(10000).fadeOut();
+}
 
 var t = 9001,
     data = d3.range(50).map(function(x) {return({time: x, value: x * 2});});
@@ -117,6 +135,13 @@ var coredata = d3.range(4).map(function(x) {return(x * 25);});
 
 function coreSet(cpu1, cpu2, cpu3, cpu4) {
     coredata = [cpu1, cpu2, cpu3, cpu4];
+    if ((cpu1 > 50) ||
+	(cpu2 > 50) ||
+	(cpu3 > 50) ||
+	(cpu4 > 50))
+	$("#cputop").fadeIn();
+    else
+	$("#cputop").fadeOut();
 }
 
 

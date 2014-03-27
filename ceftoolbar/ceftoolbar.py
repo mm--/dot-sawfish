@@ -521,7 +521,8 @@ class PipeTracker:
         self.mainBrowser = mainBrowser
         conky = subprocess.Popen(['/home/jm3/.sawfish/scripts/conky-ceftoolbar.sh'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         fifo = subprocess.Popen(['/home/jm3/.sawfish/scripts/replace-listen-fifo.sh', '0.1'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        processes = [conky, fifo]
+        logalert = subprocess.Popen(['/home/jm3/.sawfish/scripts/log-alert.sh'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        processes = [conky, fifo, logalert]
         self.fdtoprocess = dict([(x.stdout.fileno(), x.stdout) for x in processes])
         self.poll = select.poll()
         for x in processes:
@@ -536,7 +537,7 @@ class PipeTracker:
             (rfd,event) = event
             if event & select.POLLIN:
                 line = self.fdtoprocess[rfd].readline().rstrip()
-                if line_handler(line):
+                if line_handler(line, self.mainBrowser.GetMainFrame()):
                     self.mainBrowser.GetMainFrame().ExecuteFunction("callUpdate")
                     self.mainBrowser.GetMainFrame().ExecuteFunction("nextPoint", remember["CPU"])
             if event & select.POLLHUP:
@@ -546,7 +547,7 @@ class PipeTracker:
 
 remember = {}
 
-def line_handler(line):
+def line_handler(line, mainframe):
     """Take a line. If it's not a REPLACE then remember it. Output to
 stdout if it's a FLUSH"""
     m = re.match(r"^(.*?):(.*)$", line)
@@ -554,6 +555,8 @@ stdout if it's a FLUSH"""
         command, rest = m.group(1,2)
         if command == "UPDATE":
             return True
+        elif command == "ALERT":
+            mainframe.ExecuteFunction("logAlert", rest)
         else:
             remember[command] = rest
     return False
