@@ -13,7 +13,7 @@
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/2048.png" 2)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/iceland.png" 3)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/YzbQWzH.png" 4)
-(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/3Jccsr6.png" 5)
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/BonsaiRock.png" 5)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/k0DyX6Y.png" 6)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/MIpllFc.png" 7)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/ZDCCvIQ.png" 8)
