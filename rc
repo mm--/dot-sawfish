@@ -15,8 +15,7 @@
 (define emacs-keymap (make-keymap))
 ( bind-keys emacs-keymap
 	    "a" '( jump-or-exec "Aptitude" "xterm -title Aptitude -e 'sudo aptitude'" )
-	    "o" '( jump-or-exec "Org Agenda" "emacsclient -c -e '(org-agenda-list)'" t )
-	    "o" '( jump-or-exec "Org Agenda" "emacsclient -c -e '(org-agenda-list)'" t )
+	    "o" '( system "emacsclient -e '(org-clock-out)' &" )
 	    "b" '( jump-or-exec "UC Berkeley Mail" "chromium --new-window http://bmail.berkeley.edu" t )
 	    "m" '( jump-or-exec "\\*Man" "emacsclient -c -e '(call-interactively (quote man))'" t )
 	    "c" '( jump-or-exec "Google Calendar" "chromium --new-window http://calendar.google.com" t ))
@@ -186,6 +185,9 @@
        '( ( depth . -16 )
 	  ( opacity . 100 )) )
 
+( add-window-matcher '( ( WM_CLASS . "^XTerm/xterm$" ) )
+       '( ( place-mode . under-pointer ) ))
+
 (require 'josh-expand)
 (bind-keys global-keymap
 	   "W-C-Button4-Click" '(expand-window (input-focus) 5)
@@ -204,6 +206,7 @@
 ;; (add-window-matcher
 ;;  '((WM_NAME . "Chromium"))
 ;;  '((keymap-trans . (("C-s" "C-f")))))
+
 
 (define (startup-stuff)
   "Some applications I set up after initialization."
