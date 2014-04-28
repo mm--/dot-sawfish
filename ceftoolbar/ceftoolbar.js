@@ -2,6 +2,20 @@ function updateTime() {
     $("#time").text(moment().format('MMM Do YYYY, HH:mm:ss'));
 };
 
+var taskName = "Nothing";
+var taskTime = moment();
+function updateTask() {
+    var totalSec = parseInt(moment.duration(moment() - taskTime).asSeconds());
+    var hours = parseInt( totalSec / 3600 ) % 24;
+    var minutes = parseInt( totalSec / 60 ) % 60;
+    var seconds = totalSec % 60;
+
+    var outFormat = (hours < 10 ? "0" + hours : hours) + ":" + 
+	(minutes < 10 ? "0" + minutes : minutes) + ":" + 
+	(seconds  < 10 ? "0" + seconds : seconds);
+    $("#task2").text("[" + taskName + " " + outFormat + "]");
+};
+
 function callUpdate() {
     external.updateCallback(doUpdate);
 };
@@ -31,18 +45,21 @@ function doUpdate(obj) {
     $("#wifidown").text(obj["WIFIDOWN"]);
     $("#connections").text(obj["CONNECTIONS"]);
     netUpdate(parseFloat(obj["WIFIDOWN"]), parseFloat(obj["WIFIUP"]));
-    $("#task").text(obj["TASK"]);
     $("#mpdalbum").text(obj["MPDALBUM"]);
     $("#mpdartist").text(obj["MPDARTIST"]);
     $("#mpdtitle").text(obj["MPDTITLE"]);
     if(obj["MPDSTAT"] == "Stopped") {
-	$("#mpdcontainer").fadeOut();
+    	$("#mpdcontainer").fadeOut();
     } else {
-	$("#mpdcontainer").fadeIn();
+    	$("#mpdcontainer").fadeIn();
     }
-    var elapsed = moment.duration("00:" + obj["MPDELAPSED"]).asMilliseconds();
-    var length = moment.duration("00:" + obj["MPDLENGTH"]).asMilliseconds();
+    var elapsedadd = obj["MPDELAPSED"].match(".*:.*:.*") ? "" : "00:";
+    var lengthadd = obj["MPDLENGTH"].match(".*:.*:.*") ? "" : "00:";
+    var elapsed = moment.duration(elapsedadd + obj["MPDELAPSED"]).asMilliseconds();
+    var length = moment.duration(lengthadd + obj["MPDLENGTH"]).asMilliseconds();
     updateProg(elapsed, length, obj["MPDSTAT"]);
+    taskTime = moment(obj["TASKTIME"], "X");
+    taskName = obj["TASKNAME"];
 };
 
 function logAlert(line) {
@@ -71,6 +88,7 @@ function nextPoint(val) {
 var chart3;
 window.onload = function() {
     setInterval(updateTime, 500);
+    setInterval(updateTask, 1000);
 
     var w = 1,
 	h = 14;
@@ -135,10 +153,10 @@ var coredata = d3.range(4).map(function(x) {return(x * 25);});
 
 function coreSet(cpu1, cpu2, cpu3, cpu4) {
     coredata = [cpu1, cpu2, cpu3, cpu4];
-    if ((cpu1 > 50) ||
-	(cpu2 > 50) ||
-	(cpu3 > 50) ||
-	(cpu4 > 50))
+    if ((cpu1 > 80) ||
+	(cpu2 > 80) ||
+	(cpu3 > 80) ||
+	(cpu4 > 80))
 	$("#cputop").fadeIn();
     else
 	$("#cputop").fadeOut();

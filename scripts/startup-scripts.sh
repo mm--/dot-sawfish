@@ -6,6 +6,7 @@ stalonetray -bg "black" --geometry 10x1-0+0 --grow-gravity W --icon-gravity NE -
 # conky -c ~/.sawfish/conky/conky_cpu.conf &
 fvwm-root -r ~/.fvwm/wallpaper/bridge.png &
 synclient VertEdgeScroll=1 HorizTwoFingerScroll=1
+perl ~/Downloads/xSwipe-master/xSwipe.pl &
 nm-applet &
 /usr/lib/notification-daemon/notification-daemon &
 ~/code/sh/log-alert.sh &

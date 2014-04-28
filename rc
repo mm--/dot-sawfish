@@ -15,7 +15,7 @@
 (define emacs-keymap (make-keymap))
 ( bind-keys emacs-keymap
 	    "a" '( jump-or-exec "Aptitude" "xterm -title Aptitude -e 'sudo aptitude'" )
-	    "o" '( system "emacsclient -e '(org-clock-out)' &" )
+	    "o" '( system "emacsclient -e '(org-clock-out)' -e '(org-save-all-org-buffers)' &" )
 	    "b" '( jump-or-exec "UC Berkeley Mail" "chromium --new-window http://bmail.berkeley.edu" t )
 	    "m" '( jump-or-exec "\\*Man" "emacsclient -c -e '(call-interactively (quote man))'" t )
 	    "c" '( jump-or-exec "Google Calendar" "chromium --new-window http://calendar.google.com" t ))
@@ -78,10 +78,11 @@
   ;; "C-W-r"   'restart
   ;; "C-W-q"   'quit
   "W-TAB"   'cycle-windows
+  "W-S-n"   '(next-workspace 1)
+  "W-S-p"   '(previous-workspace 1)
   "W-C-TAB"   'cycle-group
   "W-t"     term-keymap
   ;; "C-TAB"   'cycle-windows-backwards
-  "W-l"   'lockscreen
   "W-M-S-l"   '(system "~/.sawfish/scripts/fingerprint-lock.sh &")
   "W-S-l"   '(system "~/.sawfish/scripts/fingerprint-xtrlock.sh &")
   "W-M-l"   '(system "xtrlock &")

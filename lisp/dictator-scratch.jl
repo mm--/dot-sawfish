@@ -24,6 +24,11 @@
 (define (espeak wpm)
   (system (concat "pgrep espeak && pkill espeak || xclip -o | espeak -a 200 -v english-us -s " (number->string wpm) " &")))
 
+(define (copy-and-espeak)
+  (synthesize-event "C-c" (input-focus))
+  (espeak 450)
+  (synthesize-event "Button1-Click1" (input-focus)))
+
 (define espeak-menu
   '(("_1 - 100 WPM" (espeak 100))
     ("_2 - 200 WPM" (espeak 200))
@@ -59,6 +64,7 @@
 ;; 	   "W-k" read-keymap)
 
 (bind-keys global-keymap
-	   "W-k" '(popup-menu espeak-menu))
+	   "W-k" '(popup-menu espeak-menu)
+	   "W-S-k" '(copy-and-espeak))
 
 (provide 'dictator-scratch)
