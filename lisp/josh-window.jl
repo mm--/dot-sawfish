@@ -63,7 +63,8 @@
 	    (t (user-eval prog)))))
 
 (bind-keys global-keymap
-	   "W-n" '(josh-show-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t))
+	   "W-n" '(josh-show-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t)
+	   "W-y" '(josh-show (get-window-by-class "MPlayer" #:regex t)))
 
 (bind-keys global-keymap
 	   "W-h" 'josh-hide
