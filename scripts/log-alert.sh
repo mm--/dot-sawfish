@@ -11,7 +11,7 @@ function alert {
 
 
 (tail --follow=name /var/log/syslog &
- tail --follow=name /var/log/auth.log )| grep --line-buffered -e "scanlogd" -e "sshd" | while read line; do
+ tail --follow=name /var/log/auth.log )| grep --line-buffered -e "scanlogd" -e "sshd" | grep --line-buffered -v -e "signal 15" | while read line; do
     now=`date +%s`
     if (( $now - $lasttime > 5 )); then # Only blink once every 5 seconds
 	lasttime=$now
