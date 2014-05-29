@@ -56,7 +56,7 @@ function doUpdate(obj) {
 	$("#mpdartist").text(obj["PIANOARTIST"]);
 	$("#mpdtitle").text(obj["PIANOTITLE"]);
     }
-    if(obj["MPDSTAT"] == "Stopped") {
+    if(!pianobar && obj["MPDSTAT"] == "Stopped") {
     	$("#mpdcontainer").fadeOut();
     } else {
     	$("#mpdcontainer").fadeIn();
