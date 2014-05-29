@@ -4,6 +4,7 @@ function updateTime() {
 
 var taskName = "Nothing";
 var taskTime = moment();
+var pianobar = false;
 function updateTask() {
     var totalSec = parseInt(moment.duration(moment() - taskTime).asSeconds());
     var hours = parseInt( totalSec / 3600 ) % 24;
@@ -45,9 +46,16 @@ function doUpdate(obj) {
     $("#wifidown").text(obj["WIFIDOWN"]);
     $("#connections").text(obj["CONNECTIONS"]);
     netUpdate(parseFloat(obj["WIFIDOWN"]), parseFloat(obj["WIFIUP"]));
-    $("#mpdalbum").text(obj["MPDALBUM"]);
-    $("#mpdartist").text(obj["MPDARTIST"]);
-    $("#mpdtitle").text(obj["MPDTITLE"]);
+    pianobar = (obj["PIANOBAR"] == "True");
+    if(!pianobar || (obj["MPDSTAT"] == "Playing") ) {
+	$("#mpdalbum").text(obj["MPDALBUM"]);
+	$("#mpdartist").text(obj["MPDARTIST"]);
+	$("#mpdtitle").text(obj["MPDTITLE"]);
+    } else {
+	$("#mpdalbum").text(obj["PIANOALBUM"]);
+	$("#mpdartist").text(obj["PIANOARTIST"]);
+	$("#mpdtitle").text(obj["PIANOTITLE"]);
+    }
     if(obj["MPDSTAT"] == "Stopped") {
     	$("#mpdcontainer").fadeOut();
     } else {
