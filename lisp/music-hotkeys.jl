@@ -84,5 +84,4 @@
 	   "XF86AudioLowerVolume" '(system "amixer set Master 2%- &")
 	   "XF86AudioPlay" 'play-mplayer-or-mpd
 	   "XF86AudioPrev" 'prev-mplayer-or-mpd
-	   "XF86AudioNext" 'next-mplayer-or-mpd
-	   "W-n" `(jump-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t))
+	   "XF86AudioNext" 'next-mplayer-or-mpd)
