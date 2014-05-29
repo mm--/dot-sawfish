@@ -29,6 +29,7 @@ import uuid
 import platform
 import gtk                      # For sticky setting
 import subprocess, select, sys
+import atexit, signal
 
 # Which method to use for message loop processing.
 #   EVT_IDLE - wx application has priority (default)
@@ -516,16 +517,22 @@ class ClientHandler:
         allowPopups = True
         return not allowPopups
 
+def kill_process(pid):
+    print "Trying to kill ", pid, " ", os.getpgid(pid)
+    os.killpg(os.getpgid(pid), signal.SIGTERM)
+
 class PipeTracker:
     def __init__(self, mainBrowser):
         self.mainBrowser = mainBrowser
-        conky = subprocess.Popen(['/home/jm3/.sawfish/scripts/conky-ceftoolbar.sh'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        fifo = subprocess.Popen(['/home/jm3/.sawfish/scripts/replace-listen-fifo.sh', '0.1'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        logalert = subprocess.Popen(['/home/jm3/.sawfish/scripts/log-alert.sh'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        processes = [conky, fifo, logalert]
+        process_scripts = [['/home/jm3/.sawfish/scripts/conky-ceftoolbar.sh'], 
+                           ['/home/jm3/.sawfish/scripts/replace-listen-fifo.sh', '0.1'],
+                           ['/home/jm3/.sawfish/scripts/log-alert.sh']]
+        processes = [subprocess.Popen(x,stdout=subprocess.PIPE,stderr=subprocess.PIPE, preexec_fn=os.setsid)
+                     for x in process_scripts]
         self.fdtoprocess = dict([(x.stdout.fileno(), x.stdout) for x in processes])
         self.poll = select.poll()
         for x in processes:
+            atexit.register(kill_process, x.pid)
             self.poll.register(x.stdout,select.POLLIN | select.POLLHUP)
         self.pollc = len(processes)
 
