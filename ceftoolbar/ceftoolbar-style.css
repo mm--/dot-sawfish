@@ -73,4 +73,8 @@ body {
   stroke: #00F;
   stroke-width: 2.5px;
 }
- 
+
+#cpu {
+    display: inline-block;
+    width: 12px;
+}
