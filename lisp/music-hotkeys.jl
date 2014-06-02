@@ -16,60 +16,33 @@
 	    pass)
 	nil))
 
-(defmacro musicctl (name mplayerdo pianodo mpcdo)
+(defmacro musicctl (name mplayerdo pianodo mpcdo mplayercommand)
   `(define (,(intern (concat name "-mplayer-or-mpd")))
     (let ((win (get-window-by-class "MPlayer")))
       (if win
 	  (synthesize-event ,mplayerdo win)
-	(if (not (eq (system ,(concat "~/.sawfish/scripts/pianobar-ctl.sh " pianodo)) 0))
+	(if (not (eq (system ,(concat "~/.sawfish/scripts/pianobar-ctl.sh " pianodo " " mplayercommand)) 0))
 	    (system (concat mpdpass ,(concat "mpc " mpcdo " &"))))))))
 
-(musicctl "play" "SPACE" "p" "toggle")
-(musicctl "next" ">" "n" "next")
-(musicctl "prev" "<" "q" "prev")
+(musicctl "play" "SPACE" "p" "toggle" "pause")
+(musicctl "next" ">" "n" "next" "pt_step 1")
+(musicctl "prev" "<" "q" "prev" "quit")
 (define-command 'play-mplayer-or-mpd play-mplayer-or-mpd)
 (define-command 'next-mplayer-or-mpd next-mplayer-or-mpd)
 (define-command 'prev-mplayer-or-mpd prev-mplayer-or-mpd)
 
 
-(define (mplayer-or-mpd-ff)
-  "If there's an MPlayer, fast forward 10 seconds
-  Otherwise, fast forward the MPD song."
-  (let ((win (get-window-by-class "MPlayer")))
-    (if win
-	(synthesize-event "Right" win)
-      (system (concat mpdpass "mpc seek +00:00:10 &")))))
-(define-command 'mplayer-or-mpd-ff mplayer-or-mpd-ff)
+(musicctl "ff" "Right" "i" "seek +00:00:10 " "seek +5")
+(musicctl "rw" "Left" "i" "seek -00:00:10 " "seek -5")
+(define-command 'mplayer-or-mpd-ff ff-mplayer-or-mpd)
+(define-command 'mplayer-or-mpd-rw rw-mplayer-or-mpd)
 
-(define (mplayer-or-mpd-rw)
-  "If there's an MPlayer, rewind 10 seconds
-  Otherwise, rewind the MPD song."
-  (let ((win (get-window-by-class "MPlayer")))
-    (if win
-	(synthesize-event "Left" win)
-      (system (concat mpdpass "mpc seek -00:00:10 &")))))
-(define-command 'mplayer-or-mpd-rw mplayer-or-mpd-rw)
-
-(define (mplayer-speed-up)
-  "Speed up mplayer"
-  (let ((win (get-window-by-class "MPlayer")))
-    (if win
-	(synthesize-event "]" win))))
-(define-command 'mplayer-speed-up mplayer-speed-up)
-
-(define (mplayer-slow-down)
-  "Slow down mplayer"
-  (let ((win (get-window-by-class "MPlayer")))
-    (if win
-	(synthesize-event "[" win))))
-(define-command 'mplayer-slow-down mplayer-slow-down)
-
-(define (mplayer-normal-speed)
-  "Normal speed mplayer"
-  (let ((win (get-window-by-class "MPlayer")))
-    (if win
-	(synthesize-event "BackSpace" win))))
-(define-command 'mplayer-normal-speed mplayer-normal-speed)
+(musicctl "speed-up" "]" "i" "stats" "speed_incr 0.10")
+(musicctl "slow-down" "[" "i" "stats" "speed_incr -0.10")
+(musicctl "speed-reset" "BackSpace" "i" "stats" "speed_set 1.00")
+(define-command 'mplayer-speed-up speed-up-mplayer-or-mpd)
+(define-command 'mplayer-slow-down slow-down-mplayer-or-mpd)
+(define-command 'mplayer-normal-speed speed-reset-mplayer-or-mpd)
 
 ;; Volume keybindings
 (bind-keys global-keymap

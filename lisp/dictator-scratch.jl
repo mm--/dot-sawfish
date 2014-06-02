@@ -22,7 +22,7 @@
 (define-command 'dictator-popup-and-shrink dictator-popup-and-shrink)
 
 (define (espeak wpm)
-  (system (concat "pgrep espeak && pkill espeak || xclip -o | espeak -a 200 -v english-us -s " (number->string wpm) " &")))
+  (system (concat "~/.sawfish/scripts/espeak.sh " (number->string wpm) " &")))
 
 (define (copy-and-espeak)
   (synthesize-event "C-c" (input-focus))
