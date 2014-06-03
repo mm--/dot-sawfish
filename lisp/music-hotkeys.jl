@@ -25,8 +25,8 @@
 	    (system (concat mpdpass ,(concat "mpc " mpcdo " &"))))))))
 
 (musicctl "play" "SPACE" "p" "toggle" "pause")
-(musicctl "next" ">" "n" "next" "pt_step 1")
-(musicctl "prev" "<" "q" "prev" "quit")
+(musicctl "next" "Return" "n" "next" "pt_step 1 1")
+(musicctl "prev" "<" "q" "prev" "pt_step -1 1")
 (define-command 'play-mplayer-or-mpd play-mplayer-or-mpd)
 (define-command 'next-mplayer-or-mpd next-mplayer-or-mpd)
 (define-command 'prev-mplayer-or-mpd prev-mplayer-or-mpd)
