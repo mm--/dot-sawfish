@@ -564,6 +564,8 @@ stdout if it's a FLUSH"""
             return True
         elif command == "ALERT":
             mainframe.ExecuteFunction("logAlert", rest)
+        elif command == "DESK":
+            mainframe.ExecuteFunction("deskSet", rest)
         else:
             remember[command] = rest
     return False

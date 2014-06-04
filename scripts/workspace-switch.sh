@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cat - >> ~/.sawfish/scripts/myfifo
+echo "DESK:$@" >> ~/.sawfish/scripts/myfifo

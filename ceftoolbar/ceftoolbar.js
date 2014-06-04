@@ -76,6 +76,10 @@ function logAlert(line) {
     $("#logalert").delay(10000).fadeOut();
 }
 
+function deskSet(desk) {
+    $("#desk").text(desk);
+}
+
 var t = 9001,
     data = d3.range(50).map(function(x) {return({time: x, value: x * 2});});
 
