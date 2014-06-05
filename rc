@@ -96,11 +96,16 @@
   ;; "C-Print" '( system "import -window root root.png &" )
   ;; "W-F2"    `( jump-or-exec "Gnome-run-dialog" "gnome-run-dialog" t )
   ;; "W-F6"    `( jump-or-exec "Geeqie" "geeqie" nil )
-  "W-r"     '( system "chromium &" )
-  "W-S-r"     '( system "chromium --incognito &" )
-  "W-f"     '( system "firefox &" )
   "W-e"   '( system "emacsclient -c -a '' &" t )
   "W-Home"    `( jump-or-exec "Home" "nautilus --no-desktop ~" t ) )
+
+;; Browser keys
+( bind-keys global-keymap
+	    "W-r"     '( system "chromium &" )
+	    "W-S-r"     '( system "chromium --incognito &" )
+	    "W-f"     '( system "firefox &" )
+	    "W-S-f"     '( system "firefox -private-window &" ))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bind workspaces to keys
