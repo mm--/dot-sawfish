@@ -31,6 +31,8 @@
 (define-command 'next-mplayer-or-mpd next-mplayer-or-mpd)
 (define-command 'prev-mplayer-or-mpd prev-mplayer-or-mpd)
 
+(musicctl "stop" "q" "q" "stop" "quit")
+(define-command 'stop-mplayer-or-mpd stop-mplayer-or-mpd)
 
 (musicctl "ff" "Right" "i" "seek +00:00:10 " "seek +5")
 (musicctl "rw" "Left" "i" "seek -00:00:10 " "seek -5")
@@ -56,5 +58,8 @@
 	   "XF86AudioRaiseVolume" '(system "amixer set Master 2%+ &")
 	   "XF86AudioLowerVolume" '(system "amixer set Master 2%- &")
 	   "XF86AudioPlay" 'play-mplayer-or-mpd
+	   "S-XF86AudioPlay" 'stop-mplayer-or-mpd
 	   "XF86AudioPrev" 'prev-mplayer-or-mpd
 	   "XF86AudioNext" 'next-mplayer-or-mpd)
+
+
