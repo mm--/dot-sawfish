@@ -257,6 +257,7 @@
 (require 'test-screenshot)
 (require 'josh-window)
 (require 'josh-wallpaper)
+(require 'josh-music-hotkeys)
 
 (require 'sawfish.wm.ext.cabinet)
 (bind-keys global-keymap "W-s" 'cabinet-switch)
