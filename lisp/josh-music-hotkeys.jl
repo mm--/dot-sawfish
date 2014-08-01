@@ -59,7 +59,6 @@
 	   "XF86AudioLowerVolume" '(system "amixer set Master 2%- &")
 	   "XF86AudioPlay" 'play-mplayer-or-mpd
 	   "S-XF86AudioPlay" 'stop-mplayer-or-mpd
+	   "XF86AudioPause" 'stop-mplayer-or-mpd
 	   "XF86AudioPrev" 'prev-mplayer-or-mpd
 	   "XF86AudioNext" 'next-mplayer-or-mpd)
-
-
