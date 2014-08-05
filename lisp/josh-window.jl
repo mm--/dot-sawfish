@@ -40,6 +40,17 @@
       (josh-hide window)
     (josh-show window)))
 
+(define (josh-show-hide-sticky window)
+  "Show it if it's not focused. Hide it if it is."
+  (if (and  (window-in-workspace-p window current-workspace)
+	    (not (window-outside-viewport-p window))
+	    (not (window-obscured window)))
+      (progn
+	(make-window-unsticky window)
+	(josh-hide window))
+    (progn (josh-show window)
+	   (make-window-sticky/viewport window))))
+
 (define (josh-unhide)
   "Unhide a recently hidden window"
   (let ((win (car josh-hide-list)))
@@ -64,7 +75,8 @@
 
 (bind-keys global-keymap
 	   "W-n" '(josh-show-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t)
-	   "W-y" '(josh-show-hide (get-window-by-class "MPlayer" #:regex t)))
+	   "W-y" '(josh-show-hide (get-window-by-class "MPlayer" #:regex t))
+	   "W-C-y" '(josh-show-hide-sticky (get-window-by-class "MPlayer" #:regex t)))
 
 (bind-keys global-keymap
 	   "W-h" 'josh-hide
