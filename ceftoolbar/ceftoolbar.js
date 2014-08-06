@@ -22,7 +22,7 @@ function callUpdate() {
 };
 
 function doUpdate(obj) {
-    $("#stuff").text(JSON.stringify(obj));
+    // $("#stuff").text(JSON.stringify(obj));
     $("#cpu").text(obj["CPU"]);
     coreSet(parseFloat(obj["CPU1"]),
 	    parseFloat(obj["CPU2"]),
@@ -41,6 +41,8 @@ function doUpdate(obj) {
     $("#bat").css("border-bottom-color", batcol);
     $("#bat").css("border-bottom-style", batstyle);
     $("#bat").css('color', heatmapColour(1-(parseFloat(obj["BAT"])/100)));
+    $("#temp0").text(obj["TEMP0"]);
+    $("#temp1").text(obj["TEMP1"]);
     $("#wifi").text(obj["WIFI"]);
     $("#wifiup").text(obj["WIFIUP"]);
     $("#wifidown").text(obj["WIFIDOWN"]);

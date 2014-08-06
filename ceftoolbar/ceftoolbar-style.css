@@ -68,6 +68,10 @@ body {
     font-size: x-small;
 }
 
+#temp0, #temp1 {
+    font-size: 9px;
+}
+
 .line {
   fill: none;
   stroke: #00F;
