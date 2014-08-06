@@ -4,17 +4,33 @@ function updateTime() {
 
 var taskName = "Nothing";
 var taskTime = moment();
+
+//A fake time when the computer "started". Calculated by taking the
+//moment now minus the number of seconds the computer has been used
+//for
+var computerVirtualStartTime = moment();
 var pianobar = false;
-function updateTask() {
-    var totalSec = parseInt(moment.duration(moment() - taskTime).asSeconds());
+
+function secondsToString(totalSec, showSeconds) {
     var hours = parseInt( totalSec / 3600 ) % 24;
     var minutes = parseInt( totalSec / 60 ) % 60;
     var seconds = totalSec % 60;
 
     var outFormat = (hours < 10 ? "0" + hours : hours) + ":" + 
-	(minutes < 10 ? "0" + minutes : minutes) + ":" + 
-	(seconds  < 10 ? "0" + seconds : seconds);
+	    (minutes < 10 ? "0" + minutes : minutes);
+    if(showSeconds)
+	outFormat += ":" + (seconds  < 10 ? "0" + seconds : seconds);
+    return outFormat;
+}
+
+function updateTask() {
+    var outFormat = secondsToString(parseInt(moment.duration(moment() - taskTime).asSeconds()), true);
     $("#task2").text("[" + taskName + " " + outFormat + "]");
+};
+
+function updateComputerTime() {
+    var outFormat = secondsToString(parseInt(moment.duration(moment() - computerVirtualStartTime).asSeconds()), false);
+    $("#computertime").text("(CT: " + outFormat + ")");
 };
 
 function callUpdate() {
@@ -72,6 +88,7 @@ function doUpdate(obj) {
     var elapsed = moment.duration(elapsedadd + obj["MPDELAPSED"]).asMilliseconds();
     var length = moment.duration(lengthadd + obj["MPDLENGTH"]).asMilliseconds();
     updateProg(elapsed, length, obj["MPDSTAT"]);
+    computerVirtualStartTime = moment(obj["COMPUTERVIRTUALSTART"], 'X');
     taskTime = moment(obj["TASKTIME"], "X");
     taskName = obj["TASKNAME"];
 };
@@ -107,6 +124,7 @@ var chart3;
 window.onload = function() {
     setInterval(updateTime, 500);
     setInterval(updateTask, 1000);
+    setInterval(updateComputerTime, 1000);
 
     var w = 1,
 	h = 14;
