@@ -11,12 +11,16 @@
 
 (require 'rep.io.timers)
 
+;; Used to replace characters that make it hard to save a filename
+(setq alphanumeric-table "_____________________________________________-._0123456789:__=_?@ABCDEFGHIJKLMNOPQRSTUVWXYZ______abcdefghijklmnopqrstuvwxyz___~_________________________________________________________________________________________________________________________________")
+
 (define (screenshot-window win)
   "Take a screenshot of the window given, and save it in ~/screenshots"
   (let* ((id (format nil "0x%x" (window-id win)))
-	 (screenfilename (concat "~/screenshots/" (current-time-string (current-time) "%F_%R:%S") "-" id ".png")))
+	 (winname (translate-string (concat (window-name win)) alphanumeric-table))
+	 (screenfilename (concat "~/screenshots/" (current-time-string (current-time) "%F_%R:%S") "-" winname ".png")))
     (system (concat "import -window " id " -quality 100 " screenfilename))
-    (display-message "Done")
+    (display-message screenfilename)
     (make-timer (lambda () (display-message nil)) 1)
     ))
 
