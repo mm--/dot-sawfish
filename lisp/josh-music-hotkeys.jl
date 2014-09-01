@@ -18,7 +18,7 @@
 
 (defmacro musicctl (name mplayerdo pianodo mpcdo mplayercommand)
   `(define (,(intern (concat name "-mplayer-or-mpd")))
-    (let ((win (get-window-by-class "MPlayer")))
+    (let ((win (get-window-by-class "mplayer2")))
       (if win
 	  (synthesize-event ,mplayerdo win)
 	(if (not (eq (system ,(concat "~/.sawfish/scripts/pianobar-ctl.sh " pianodo " " mplayercommand)) 0))
