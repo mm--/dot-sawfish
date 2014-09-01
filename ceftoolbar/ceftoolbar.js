@@ -1,5 +1,5 @@
 function updateTime() {
-    $("#time").text(moment().format('MMM Do YYYY, HH:mm:ss'));
+    $("#time").text(moment().format('ddd MMM Do YYYY, HH:mm:ss'));
 };
 
 var taskName = "Nothing";
@@ -63,6 +63,7 @@ function doUpdate(obj) {
     $("#wifiup").text(obj["WIFIUP"]);
     $("#wifidown").text(obj["WIFIDOWN"]);
     $("#connections").text(obj["CONNECTIONS"]);
+    $("#rcirc").text(obj["RCIRC"]);
     netUpdate(parseFloat(obj["WIFIDOWN"]), parseFloat(obj["WIFIUP"]));
     pianobar = (obj["PIANOBAR"] == "True");
     if(!pianobar || (obj["MPDSTAT"] == "Playing") ) {
