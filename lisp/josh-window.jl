@@ -75,7 +75,7 @@
 
 (bind-keys global-keymap
 	   "W-n" '(josh-show-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t)
-	   "W-y" '(josh-show-hide (get-window-by-class "MPlayer" #:regex t))
+	   "W-y" '(josh-show-hide (or (get-window-by-class "mplayer2" #:regex t) (get-window-by-class "mpv" #:regex t)))
 	   "W-C-y" '(josh-show-hide-sticky (get-window-by-class "MPlayer" #:regex t)))
 
 (bind-keys global-keymap
