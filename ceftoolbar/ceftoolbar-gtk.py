@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # CEFtoolbar
 # A dzen-like toolbar for my window manager
 # This script is just a modified version of the "pygtk" example from cefpython
