@@ -19,7 +19,7 @@ done
 YTURL=$(xclip -o)
 echo Downloading from url $YTURL
 
-OUTPUT=$(youtube-dl -g -e -o "$STRTEMP" --cookies=/tmp/ytcookie.txt $OTHERARGS --get-filename -v "$YTURL")
+OUTPUT=$(youtube-dl --no-playlist -g -e -o "$STRTEMP" --cookies=/tmp/ytcookie.txt $OTHERARGS --get-filename -v "$YTURL")
 if [ -n "$DOWNLOAD" ]; then
    SAVELOC=$(echo "$OUTPUT" | sed -n '3p')
    echo Saving in location $SAVELOC
