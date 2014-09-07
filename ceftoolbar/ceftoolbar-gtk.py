@@ -119,7 +119,8 @@ class CEFToolbar:
 
         self.vbox.show()
         self.mainWindow.show()
-        gobject.timeout_add(10, self.OnTimer)
+        gobject.timeout_add(1, self.OnTimer)
+        gobject.timeout_add(1, self.OnPipeTimer)
 
     def OnWidgetClick(self, widget, data):
         self.mainWindow.get_window().focus()
@@ -127,8 +128,13 @@ class CEFToolbar:
     def OnTimer(self):
         if self.exiting:
             return False
-        self.myTracker.handleEvents()
         cefpython.MessageLoopWork()
+        return True
+
+    def OnPipeTimer(self):
+        if self.exiting:
+            return False
+        self.myTracker.handleEvents()
         return True
 
     def OnFocusIn(self, widget, data):
@@ -319,7 +325,7 @@ if __name__ == '__main__':
 
     # Application settings
     settings = {
-        "debug": True, # cefpython debug messages in console and in log_file
+        "debug": False, # cefpython debug messages in console and in log_file
         "log_severity": cefpython.LOGSEVERITY_INFO, # LOGSEVERITY_VERBOSE
         "log_file": GetApplicationPath("debug.log"), # Set to "" to disable
         "release_dcheck_enabled": True, # Enable only when debugging

@@ -4,7 +4,7 @@
 if pgrep -u `whoami` -x pianobar
 then
     echo -n "$1" > ~/.config/pianobar/ctl
-elif pgrep -u `whoami` -f "mplayer.*slave.*mplayerfifo"
+elif pgrep -u `whoami` -f "mplayerfifo"
 then
     echo "PAUSING"
     echo "${*:2}" > ~/.sawfish/pipes/mplayerfifo
