@@ -50,6 +50,7 @@
     ("Youtube Dow_nload" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -d &" ))
     ("Youtube Download _first" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -d -f &" ))
     ("Youtu_be download medium" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -m -d &" ))
+    ("Youtube _Just Download" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -j &" ))
     ))
 
 (define read-keymap (make-keymap))

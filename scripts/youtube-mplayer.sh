@@ -4,7 +4,7 @@ STRTEMP="$HOME/video/youtube/%(title)s-%(id)s.%(ext)s"
 
 OTHERARGS=""
 SAVELOC="/dev/null"
-while getopts "mdf" arg; do
+while getopts "mdfj" arg; do
 case $arg in
     m) OTHERARGS="--max-quality 18"
        ;;
@@ -12,6 +12,10 @@ case $arg in
        DOWNLOAD="1"
        ;;
     d) DOWNLOAD="1"
+       ;;
+    j) DOWNLOADFIRST="1"
+       DOWNLOAD="1"
+       JUSTDOWNLOAD="1"
        ;;
     esac
 done
@@ -37,13 +41,15 @@ echo URL: $URL
 if [ -n "$DOWNLOADFIRST" ]; then
     echo "Using wget to download first"
     wget --load-cookies /tmp/ytcookie.txt -U "$USERAGENT" "$URL" --no-use-server-timestamps -c -O "$SAVELOC"
-    mplayer -fixed-vo -geometry -0-0 -title "$TITLE" "$SAVELOC"
-elif [ -n "$DOWNLOAD" ] || echo "$URL" | grep "https"; then
+    if [ ! -n "$JUSTDOWNLOAD" ]; then
+	mpv --geometry=-0-0 -title "$TITLE" "$SAVELOC"
+    fi
+elif [ -n "$DOWNLOAD" ]; then
     echo "Using wget"
-    wget --load-cookies /tmp/ytcookie.txt -U "$USERAGENT" "$URL" -O - | tee "$SAVELOC" | mplayer -fixed-vo -geometry -0-0 -cache 8192 -title "$TITLE" -
+    wget --load-cookies /tmp/ytcookie.txt -U "$USERAGENT" "$URL" -O - | tee "$SAVELOC" | mpv --geometry=-0-0 --cache=8192 -title "$TITLE" -
 else
     echo "Mplayer direct stream"
-    mplayer -fixed-vo -geometry -0-0 -cookies -cookies-file /tmp/ytcookie.txt -user-agent "$USERAGENT" -title "$TITLE" "$URL"
+    mpv --geometry=-0-0 --cookies --cookies-file=/tmp/ytcookie.txt --user-agent="$USERAGENT" -title "$TITLE" "$URL"
 fi
 sleep 10
 
