@@ -9,7 +9,7 @@ COUNTER=0
 if [ -n "$1" ]; then
     COUNTER=$(($1 * 60))
 fi
-THRESHHOURS=5
+THRESHHOURS=12
 THRESHOLD=$((THRESHHOURS * 60 * 60))
 
 function getdate {
