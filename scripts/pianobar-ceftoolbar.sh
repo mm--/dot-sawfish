@@ -9,10 +9,17 @@ done < <(grep -e '^\(title\|artist\|album\|stationName\|songStationName\|pRet\|p
 
 FIFO="$HOME/.sawfish/scripts/myfifo"
 case "$1" in
-	songstart)
-		echo "PIANOBAR:True" > "$FIFO"
-		echo "PIANOARTIST:$artist" > "$FIFO"
-		echo "PIANOTITLE:$title" > "$FIFO"
-		echo "UPDATE: please" > "$FIFO"
-		;;
+    songstart)
+	cat > "$FIFO" <<EOF
+PIANOBAR:True
+PIANOARTIST:$artist
+PIANOTITLE:$title
+UPDATE: please
+EOF
+	;;
+		# echo "PIANOBAR:True" > "$FIFO"
+		# echo "PIANOARTIST:$artist" > "$FIFO"
+		# echo "PIANOTITLE:$title" > "$FIFO"
+		# echo "UPDATE: please" > "$FIFO"
+		# ;;
 esac
