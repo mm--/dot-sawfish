@@ -53,21 +53,15 @@
 	    "W-Button3-Move" 'resize-window-interactively
 	    "W-Button1-Move" 'move-window-interactively
 	    "W-Button1-Click2" 'maximize-window-toggle
-	    "W-Button3-Click2" '(window-put (input-focus) 'opacity ())
+	    "W-Button3-Click2" '(remove-transparency (input-focus))
 	    "W-Button4-Click" '(opacity-increment (input-focus) 5)
 	    "W-Button5-Click" '(opacity-increment (input-focus) -5)
 	    "M-F4" 'delete-window
 	    )
 
-(define (opacity-increment window inc)
-  "Increment opacity of WINDOW by INC"
-  (define (get-opacity w)
-    (* (/ 4294967294.00 100) w))
-  (let* ((opacity (or (window-get window 'opacity) 100))
-	 (newopacity (min (max (+ opacity inc) 0) 100)))
-    (window-put window 'opacity newopacity)
-    (set-x-property (window-frame-id window) '_NET_WM_WINDOW_OPACITY (make-vector 1 (get-opacity newopacity)) 'CARDINAL 32)
-    (sync-server)))
+(require 'opacity-tools)
+(bind-keys subd-keymap
+	   "t" '(toggle-opacity-viewport))
 
 (define (lockscreen)
   "Lock the screen"
