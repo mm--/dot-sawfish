@@ -4,6 +4,7 @@
 (unbind-keys window-keymap)
 (define max-keymap (make-keymap))
 ( bind-keys max-keymap
+	    "W-d" 'maximize-discard
 	    "W-m" 'maximize-window-toggle
 	    "W-v" 'maximize-window-vertically-toggle
 	    "W-h" 'maximize-window-horizontally-toggle
@@ -208,6 +209,16 @@
 	   "W-C-S-Right" 'half-window-right
 	   "W-C-S-Up" 'half-window-up
 	   "W-C-S-Down" 'half-window-down)
+
+;; Some experimental tiling stuff
+(define subd-keymap (make-keymap))
+( bind-keys global-keymap
+	    "W-a" subd-keymap)
+( bind-keys subd-keymap
+	    "a" '(true-move (input-focus) (subd (calculate-workarea) 'left))
+	    "s" '(master-wind (input-focus))
+	    "d" '(true-move (input-focus) (subd (calculate-workarea) 'right)))
+
 
 ;; I keep confusing Emacs's "search" and Chromium's "save"
 ;; (add-window-matcher

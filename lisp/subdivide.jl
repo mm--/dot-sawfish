@@ -22,6 +22,9 @@
 ;; Todo: Make fraction configurable
 ;; Make a function that takes a list of directions?
 
+(require 'sawfish.wm.util.workarea)
+(require 'sawfish.wm.util.rects)
+
 (define (half-window w direction)
   "Resizes window to half in the direction specified"
   (let* ((frame-dim (window-frame-dimensions w))
@@ -62,5 +65,54 @@
 (define-command 'half-window-right half-window-right #:spec "%W")
 (define-command 'half-window-up half-window-up #:spec "%W")
 (define-command 'half-window-down half-window-down #:spec "%W")
+
+(define (subd rect direction #!optional amount pos)
+  "Calculates a new rectangle by dividing the rectange either up,
+down, left, or right. Amount refers to what fraction we should
+take of its width/height, for example to half it we'd use 2. Pos
+is used with either right or down, and it refers to where in the
+subdivision we'd like to place the rectangle. This is useful for
+tiling."
+  (let* ((amount (or amount 2))
+	 (pos (or pos 1))
+	 (width (- (rect-right rect) (rect-left rect)))
+	 (height(- (rect-bottom rect) (rect-top rect)))
+	 (x (rect-left rect))
+	 (y (rect-top rect))
+	 (scale-wx (round (/ width amount)))
+	 (scale-wy (round (/ height amount))))
+    (if (memq direction '(left right))
+	(setq width scale-wx)
+      (setq height scale-wy))
+    (cond ((eq direction 'right) (setq x (+ x (* pos scale-wx))))
+	  ((eq direction 'down) (setq y (+ y (* pos scale-wy)))))
+    (list x y (+ x width) (+ y height) (nth 4 rect))))
+
+(define (master-wind w)
+  "A simple tiling scheme with the master window on the left and all non-masters on the right, tiled."
+  (true-move w (subd (calculate-workarea) 'left))
+  (let* ((rightrect (subd (calculate-workarea) 'right))
+	 (others (delete-if (lambda (x) (or (not (window-appears-in-workspace-p x current-workspace))
+					    (eq w x)
+					    (window-ignored-p x)
+					    (window-outside-viewport-p x)
+					    (window-avoided-p x))) (managed-windows)))
+	 (length (apply + (mapcar (lambda (x) 1) others))) ;I have no idea how to get the list length. :( I'm so sorry
+	 (pos 0))
+    (mapc (lambda (x) (true-move x (subd rightrect 'down length pos))
+	    (setq pos (+ 1 pos)))
+	  others)))
+
+(define (true-move w rect)
+  "I was having problems with move-resize-window-to on account of
+not taking into account frame dimensions. This helps with that"
+	(let* ((frame-dim (window-frame-dimensions w))
+	       (dim (window-dimensions w))
+	       (dx (- (car frame-dim) (car dim)))
+	       (dy (- (cdr frame-dim) (cdr dim)))
+	       (width (- (rect-right rect) (rect-left rect) dx))
+	       (height(- (rect-bottom rect) (rect-top rect) dy)))
+	  (move-resize-window-to w (rect-left rect) (rect-top rect)
+				 width height)))
 
 (provide 'subdivide)
