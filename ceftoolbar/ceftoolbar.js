@@ -64,6 +64,12 @@ function doUpdate(obj) {
     $("#wifidown").text(obj["WIFIDOWN"]);
     $("#connections").text(obj["CONNECTIONS"]);
     $("#rcirc").text(obj["RCIRC"]);
+    var numupdates = parseInt(obj["NUMUPDATES"]);
+    $("#numupdates").text(numupdates);
+    if(numupdates == 0)
+	$("#numupdates").fadeOut();
+    else
+	$("#numupdates").fadeIn();
     netUpdate(parseFloat(obj["WIFIDOWN"]), parseFloat(obj["WIFIUP"]));
     pianobar = (obj["PIANOBAR"] == "True");
     if(!pianobar || (obj["MPDSTAT"] == "Playing") ) {
