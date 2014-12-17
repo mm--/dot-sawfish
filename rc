@@ -260,10 +260,10 @@
 (require 'josh-wallpaper)
 (require 'josh-music-hotkeys)
 
-(require 'sawfish.wm.ext.cabinet)
-(bind-keys global-keymap "W-s" 'cabinet-switch)
-(nconc cabinet-filter-out-for-display-list
-       '("^dzenLEFT$" "^dzenRIGHT$" "^stalonetray" "^ConkyCPU$" "^sawfishpager$"))
+;; (require 'sawfish.wm.ext.cabinet)
+;; (bind-keys global-keymap "W-s" 'cabinet-switch)
+;; (nconc cabinet-filter-out-for-display-list
+;;        '("^dzenLEFT$" "^dzenRIGHT$" "^stalonetray" "^ConkyCPU$" "^sawfishpager$"))
 
 (bind-keys title-keymap
 	   "Button3-Click" 'popup-window-ops-menu
