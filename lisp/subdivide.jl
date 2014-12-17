@@ -92,11 +92,7 @@ tiling."
   "A simple tiling scheme with the master window on the left and all non-masters on the right, tiled."
   (true-move w (subd (calculate-workarea) 'left))
   (let* ((rightrect (subd (calculate-workarea) 'right))
-	 (others (delete-if (lambda (x) (or (not (window-appears-in-workspace-p x current-workspace))
-					    (eq w x)
-					    (window-ignored-p x)
-					    (window-outside-viewport-p x)
-					    (window-avoided-p x))) (managed-windows)))
+	 (others (viewport-windows-except w))
 	 (length (apply + (mapcar (lambda (x) 1) others))) ;I have no idea how to get the list length. :( I'm so sorry
 	 (pos 0))
     (mapc (lambda (x) (true-move x (subd rightrect 'down length pos))
@@ -131,18 +127,24 @@ not taking into account frame dimensions. This helps with that"
       (breakme (cdr seq) (subd rect (car seq)))
     rect))
 
-(define (binary-tile w)
+(define (viewport-windows-except w)
+  (delete-if (lambda (x) (eq w x)) (viewport-windows-filtered)))
+
+(define (viewport-windows-filtered)
+  (delete-if (lambda (x) (or (window-ignored-p x)
+			     (window-avoided-p x))) (viewport-windows)))
+
+(define (binary-tile-master w)
   "A binary tiling scheme, with selected master window on the left."
   (true-move w (subd (calculate-workarea) 'left))
-  (let* ((rightrect (subd (calculate-workarea) 'right))
-	 (others (delete-if (lambda (x) (or (not (window-appears-in-workspace-p x current-workspace))
-					    (eq w x)
-					    (window-ignored-p x)
-					    (window-outside-viewport-p x)
-					    (window-avoided-p x))) (managed-windows)))
-	 (length (apply + (mapcar (lambda (x) 1) others))) ;I have no idea how to get the list length. :( I'm so sorry
+  (binary-tile (viewport-windows-except w)
+	       (subd (calculate-workarea) 'right)))
+
+(define (binary-tile windows rect)
+  "A binary tiling scheme."
+  (let* ((length (apply + (mapcar (lambda (x) 1) windows))) ;I have no idea how to get the list length. :( I'm so sorry
 	 (pos 0))
-    (mapcar (lambda (x) (true-move x (breakme (tree-place (setq pos (+ 1 pos)) length nil) rightrect)))
-	  others)))
+    (mapcar (lambda (x) (true-move x (breakme (tree-place (setq pos (+ 1 pos)) length nil) rect)))
+	    windows)))
 
 (provide 'subdivide)

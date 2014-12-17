@@ -216,7 +216,8 @@
 	    "W-a" subd-keymap)
 ( bind-keys subd-keymap
 	    "s" '(master-wind (input-focus))
-	    "W-s" '(binary-tile (input-focus))
+	    "W-s" '(binary-tile-master (input-focus))
+	    "S" '(binary-tile (viewport-windows-filtered) (calculate-workarea))
 	    "a" '(true-move (input-focus) (subd (calculate-workarea) 'left))
 	    "d" '(true-move (input-focus) (subd (calculate-workarea) 'right))
 	    "w" '(true-move (input-focus) (subd (calculate-workarea) 'up))
