@@ -6,7 +6,8 @@
 ( bind-keys max-keymap
 	    "W-m" 'maximize-window-toggle
 	    "W-v" 'maximize-window-vertically-toggle
-	    "W-h" 'maximize-window-horizontally-toggle)
+	    "W-h" 'maximize-window-horizontally-toggle
+	    "W-f" 'maximize-fill-window-toggle)
 
 (define term-keymap (make-keymap))
 ( bind-keys term-keymap
