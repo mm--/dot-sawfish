@@ -24,10 +24,19 @@
     (make-timer (lambda () (display-message nil)) 1)
     ))
 
+(define (screenshot-desktop)
+  "Take a screenshot of the whole viewport, and save it in ~/screenshots"
+  (let* ((screenfilename (concat "~/screenshots/" (current-time-string (current-time) "%F_%R:%S") "-desktop.png")))
+    (system (concat "import -window root -quality 100 " screenfilename))
+    (display-message screenfilename)
+    (make-timer (lambda () (display-message nil)) 1)
+    ))
+
 (define-command 'screenshot-window screenshot-window #:spec "%W")
 
 (bind-keys global-keymap
-	   "W-C-s" 'screenshot-window)
+	   "W-C-s" 'screenshot-desktop
+	   "W-s" 'screenshot-window)
 
 ;; (format nil "0x%x" (window-id (input-focus)))
 
