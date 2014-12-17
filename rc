@@ -215,10 +215,21 @@
 ( bind-keys global-keymap
 	    "W-a" subd-keymap)
 ( bind-keys subd-keymap
-	    "a" '(true-move (input-focus) (subd (calculate-workarea) 'left))
 	    "s" '(master-wind (input-focus))
-	    "d" '(true-move (input-focus) (subd (calculate-workarea) 'right)))
+	    "W-s" '(binary-tile (input-focus))
+	    "a" '(true-move (input-focus) (subd (calculate-workarea) 'left))
+	    "d" '(true-move (input-focus) (subd (calculate-workarea) 'right))
+	    "w" '(true-move (input-focus) (subd (calculate-workarea) 'up))
+	    "x" '(true-move (input-focus) (subd (calculate-workarea) 'down))
+	    "e" '(true-move (input-focus) (subd (subd (calculate-workarea) 'right) 'up))
+	    "c" '(true-move (input-focus) (subd (subd (calculate-workarea) 'right) 'down))
+	    "q" '(true-move (input-focus) (subd (subd (calculate-workarea) 'left) 'up))
+	    "z" '(true-move (input-focus) (subd (subd (calculate-workarea) 'left) 'down)))
 
+(require 'sawfish.wm.placement.smart)
+( bind-keys subd-keymap
+	    "f" '(sp-do-placement (input-focus) sp-first-fit)
+	    "b" '(sp-do-placement (input-focus) sp-best-fit))
 
 ;; I keep confusing Emacs's "search" and Chromium's "save"
 ;; (add-window-matcher

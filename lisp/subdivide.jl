@@ -115,4 +115,34 @@ not taking into account frame dimensions. This helps with that"
 	  (move-resize-window-to w (rect-left rect) (rect-top rect)
 				 width height)))
 
+(define (tree-place x of alt)
+  (define (altdir leftorright)
+    (if alt (if (eq leftorright 'left) 'left
+	      'right)
+      (if (eq leftorright 'left) 'up
+	      'down)))
+  (let ((half (ceiling (/ of 2))))
+    (cond ((= of 1) nil)
+	  (t (if (<= x half) (cons (altdir 'left) (tree-place x half (not alt)))
+	       (cons (altdir 'right) (tree-place (- x half) (- of half) (not alt))))))))
+
+(define (breakme seq rect)
+  (if seq
+      (breakme (cdr seq) (subd rect (car seq)))
+    rect))
+
+(define (binary-tile w)
+  "A binary tiling scheme, with selected master window on the left."
+  (true-move w (subd (calculate-workarea) 'left))
+  (let* ((rightrect (subd (calculate-workarea) 'right))
+	 (others (delete-if (lambda (x) (or (not (window-appears-in-workspace-p x current-workspace))
+					    (eq w x)
+					    (window-ignored-p x)
+					    (window-outside-viewport-p x)
+					    (window-avoided-p x))) (managed-windows)))
+	 (length (apply + (mapcar (lambda (x) 1) others))) ;I have no idea how to get the list length. :( I'm so sorry
+	 (pos 0))
+    (mapcar (lambda (x) (true-move x (breakme (tree-place (setq pos (+ 1 pos)) length nil) rightrect)))
+	  others)))
+
 (provide 'subdivide)
