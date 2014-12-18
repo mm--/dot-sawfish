@@ -4,11 +4,11 @@
   "Toggle all transparencies of windows. Either set at 100 or nothing."
   (let ((wins (viewport-windows-filtered)))
 	(if (delete-if-not identity
-			   (mapcar (lambda (x) (window-get x 'opacity)) wins))
-	    (progn (mapc (lambda (x) (window-put x 'opacity ())
+			   (mapcar (lambda (x) (not (window-get x 'opacity))) wins))
+	    (mapc (lambda (x) (opacity-increment x 100)) wins)
+	  (progn (mapc (lambda (x) (window-put x 'opacity ())
 			 (window-opacity x)) wins)
-		   (sync-server))
-	  (mapc (lambda (x) (opacity-increment x 100)) wins))))
+		 (sync-server)))))
 
 (define (remove-transparency w)
   (window-put (input-focus) 'opacity ())
