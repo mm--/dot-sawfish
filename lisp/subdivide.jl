@@ -66,6 +66,12 @@
 (define-command 'half-window-up half-window-up #:spec "%W")
 (define-command 'half-window-down half-window-down #:spec "%W")
 
+(define (opposite-dir direction)
+  (cond ((eq direction 'left) 'right)
+	((eq direction 'right) 'left)
+	((eq direction 'up) 'down)
+	((eq direction 'down) 'up)))
+
 (define (subd rect direction #!optional amount pos)
   "Calculates a new rectangle by dividing the rectange either up,
 down, left, or right. Amount refers to what fraction we should
@@ -80,13 +86,19 @@ tiling."
 	 (x (rect-left rect))
 	 (y (rect-top rect))
 	 (scale-wx (round (/ width amount)))
-	 (scale-wy (round (/ height amount))))
+	 (scale-wy (round (/ height amount)))
+	 (weight (nth 4 rect))
+	 (opposite (opposite-dir direction)))
     (if (memq direction '(left right))
 	(setq width scale-wx)
       (setq height scale-wy))
     (cond ((eq direction 'right) (setq x (+ x (* pos scale-wx))))
 	  ((eq direction 'down) (setq y (+ y (* pos scale-wy)))))
-    (list x y (+ x width) (+ y height) (nth 4 rect))))
+    (list x y
+	  (+ x width) (+ y height)
+	  (if (memq opposite weight)
+	      weight
+	    (cons opposite weight)))))
 
 (define (master-wind w)
   "A simple tiling scheme with the master window on the left and all non-masters on the right, tiled."
@@ -134,17 +146,34 @@ not taking into account frame dimensions. This helps with that"
   (delete-if (lambda (x) (or (window-ignored-p x)
 			     (window-avoided-p x))) (viewport-windows)))
 
-(define (binary-tile-master w)
-  "A binary tiling scheme, with selected master window on the left."
-  (true-move w (subd (calculate-workarea) 'left))
-  (binary-tile (viewport-windows-except w)
-	       (subd (calculate-workarea) 'right)))
+(define (shrink-rect rect amount)
+  "Shrink the rectangle by some amount. If there's no amount,
+just return the rectangle."
+  (if amount
+      (let ((weight (nth 4 rect))
+	    (half (round (/ amount 2))))
+	(list (+ (rect-left rect) (if (memq 'left weight) half amount))
+	      (+ (rect-top rect) (if (memq 'up weight) half amount))
+	      (- (rect-right rect) (if (memq 'right weight) half amount))
+	      (- (rect-bottom rect) (if (memq 'down weight) half amount))
+	      weight))
+    rect))
 
-(define (binary-tile windows rect)
+(define (binary-tile-master w #!optional pad)
+  "A binary tiling scheme, with selected master window on the
+left. Optional padding."
+  (let ((others (viewport-windows-except w)))
+    (if (not others)
+	(true-move w (shrink-rect (calculate-workarea) pad))
+      (true-move w (shrink-rect (subd (calculate-workarea) 'left) pad))
+      (binary-tile-pad (viewport-windows-except w)
+		       (subd (calculate-workarea) 'right) pad))))
+
+(define (binary-tile windows rect #!optional pad vertical)
   "A binary tiling scheme."
   (let* ((length (apply + (mapcar (lambda (x) 1) windows))) ;I have no idea how to get the list length. :( I'm so sorry
 	 (pos 0))
-    (mapcar (lambda (x) (true-move x (breakme (tree-place (setq pos (+ 1 pos)) length nil) rect)))
+    (mapcar (lambda (x) (true-move x (shrink-rect (breakme (tree-place (setq pos (+ 1 pos)) length vertical) rect) pad)))
 	    windows)))
 
 (provide 'subdivide)

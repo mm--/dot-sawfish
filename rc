@@ -60,8 +60,6 @@
 	    )
 
 (require 'opacity-tools)
-(bind-keys subd-keymap
-	   "t" '(toggle-opacity-viewport))
 
 (define (lockscreen)
   "Lock the screen"
@@ -208,10 +206,11 @@
 (define subd-keymap (make-keymap))
 ( bind-keys global-keymap
 	    "W-a" subd-keymap)
+
 ( bind-keys subd-keymap
 	    "s" '(master-wind (input-focus))
-	    "W-s" '(binary-tile-master (input-focus))
-	    "S" '(binary-tile (viewport-windows-filtered) (calculate-workarea))
+	    "W-s" '(binary-tile-master (input-focus) 20)
+	    "S" '(binary-tile (viewport-windows-filtered) (calculate-workarea) t)
 	    "a" '(true-move (input-focus) (subd (calculate-workarea) 'left))
 	    "d" '(true-move (input-focus) (subd (calculate-workarea) 'right))
 	    "w" '(true-move (input-focus) (subd (calculate-workarea) 'up))
@@ -219,7 +218,19 @@
 	    "e" '(true-move (input-focus) (subd (subd (calculate-workarea) 'right) 'up))
 	    "c" '(true-move (input-focus) (subd (subd (calculate-workarea) 'right) 'down))
 	    "q" '(true-move (input-focus) (subd (subd (calculate-workarea) 'left) 'up))
-	    "z" '(true-move (input-focus) (subd (subd (calculate-workarea) 'left) 'down)))
+	    "z" '(true-move (input-focus) (subd (subd (calculate-workarea) 'left) 'down))
+	    "W-a" '(true-move (input-focus) (shrink-rect (subd (calculate-workarea) 'left) 20))
+	    "W-d" '(true-move (input-focus) (shrink-rect (subd (calculate-workarea) 'right) 20))
+	    "W-w" '(true-move (input-focus) (shrink-rect (subd (calculate-workarea) 'up) 20))
+	    "W-x" '(true-move (input-focus) (shrink-rect (subd (calculate-workarea) 'down) 20))
+	    "W-e" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'right) 'up) 20))
+	    "W-c" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'right) 'down) 20))
+	    "W-q" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'left) 'up) 20))
+	    "W-z" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'left) 'down) 20)))
+
+(bind-keys subd-keymap
+	   "t" '(toggle-opacity-viewport)
+	   "W-t" '(toggle-opacity-viewport))
 
 (require 'sawfish.wm.placement.smart)
 ( bind-keys subd-keymap
