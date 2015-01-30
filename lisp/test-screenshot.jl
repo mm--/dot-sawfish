@@ -35,7 +35,7 @@
 (define-command 'screenshot-window screenshot-window #:spec "%W")
 
 (bind-keys global-keymap
-	   "W-C-s" 'screenshot-desktop
+	   "W-C-s" '(screenshot-desktop)
 	   "W-s" 'screenshot-window)
 
 ;; (format nil "0x%x" (window-id (input-focus)))
