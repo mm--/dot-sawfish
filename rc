@@ -181,6 +181,9 @@
 	  ( ignored . t)
           ( fixed-positon . t )))
 
+( add-window-matcher '( ( WM_NAME . "^sawfishpager$" ) )
+       '( ( ignored . t)))
+
 ( add-window-matcher '( ( WM_NAME . "^stalonetray$" ) )
        '( ( depth . -16 )
 	  ( opacity . 100 )) )
@@ -242,12 +245,25 @@
 ;;  '((WM_NAME . "Chromium"))
 ;;  '((keymap-trans . (("C-s" "C-f")))))
 
+(define (initfunction)
+  "Kind of like FVWM's InitFunction, only run the first time and
+not during restarts."
+  (if (file-exists-p "~/.sawfish/.restart_sawfish")
+      (delete-file "~/.sawfish/.restart_sawfish")
+    (system "~/.sawfish/scripts/initfunction-scripts.sh &")))
 
-(define (startup-stuff)
-  "Some applications I set up after initialization."
-  (system "~/.sawfish/scripts/startup-scripts.sh &"))
+(define (startfunction)
+  "Kind of like FVWM's StartFunction. Run each time Sawfish starts."
+  (system "~/.sawfish/scripts/startfunction-scripts.sh &"))
 
-(add-hook 'after-initialization-hook startup-stuff)
+(define (restartfunction)
+  "Kind of like FVWM's RestartFunction. Run each time Sawfish restarts."
+  (system "touch ~/.sawfish/.restart_sawfish &")
+  (delete-window (get-window-by-name "ceftoolbar")))
+
+(add-hook 'before-restart-hook restartfunction)
+(add-hook 'after-initialization-hook initfunction)
+(add-hook 'after-initialization-hook startfunction)
 
 ;; stalonetray -bg "black" --geometry 10x1-0+0 --grow-gravity W --icon-gravity NE --icon-size 16 --dockapp-mode simple
 ;; synclient VertEdgeScroll=1
