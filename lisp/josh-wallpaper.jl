@@ -30,6 +30,7 @@
       (system (concat "fvwm-root -r " wallpaper " &")))))
 
 (add-hook 'enter-workspace-hook josh-wallpaper-change)
+(add-hook 'after-initialization-hook josh-wallpaper-change)
 
 (define (josh-lockscreen)
   "Lock the screen"

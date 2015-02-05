@@ -245,12 +245,20 @@
 ;;  '((WM_NAME . "Chromium"))
 ;;  '((keymap-trans . (("C-s" "C-f")))))
 
+(define (bind-emacs)
+  "Get an Emacs window and bind it to W-3"
+  (let ((w (get-window-by-class "Emacs")))
+    (true-move w (shrink-rect (subd (calculate-workarea) 'left) 20))
+    (set-frame-style w 'candido)
+    (josh-bind-window "3" w)))
+
 (define (initfunction)
   "Kind of like FVWM's InitFunction, only run the first time and
 not during restarts."
   (if (file-exists-p "~/.sawfish/.restart_sawfish")
       (delete-file "~/.sawfish/.restart_sawfish")
-    (system "~/.sawfish/scripts/initfunction-scripts.sh &")))
+    (system "~/.sawfish/scripts/initfunction-scripts.sh &")
+    (make-timer (bind-emacs) 5)))
 
 (define (startfunction)
   "Kind of like FVWM's StartFunction. Run each time Sawfish starts."
