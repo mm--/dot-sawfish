@@ -166,7 +166,7 @@ left. Optional padding."
     (if (not others)
 	(true-move w (shrink-rect (calculate-workarea) pad))
       (true-move w (shrink-rect (subd (calculate-workarea) 'left) pad))
-      (binary-tile-pad (viewport-windows-except w)
+      (binary-tile (viewport-windows-except w)
 		       (subd (calculate-workarea) 'right) pad))))
 
 (define (binary-tile windows rect #!optional pad vertical)
