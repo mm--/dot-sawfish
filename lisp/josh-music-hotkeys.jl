@@ -25,6 +25,15 @@
 	(if (not (eq (system ,(concat "~/.sawfish/scripts/pianobar-ctl.sh " pianodo " " mpvcommand)) 0))
 	    (system (concat mpdpass ,(concat "mpc " mpcdo " &"))))))))
 
+(defmacro volumectl (name mplayerdo mpvcommand amount)
+  `(define (,(intern (concat name "-mpv")))
+     (let ((win (or (get-window-by-class "mplayer2")
+		    (get-window-by-class "mpv"))))
+      (if win
+	  (synthesize-event ,mplayerdo win)
+	(if (not (eq (system ,(concat "~/.sawfish/scripts/mpv-volume-ctl.sh " mpvcommand)) 0))
+	    (system (concat "amixer set Master " " &")))))))
+
 (musicctl "play" "SPACE" "p" "toggle" "cycle pause")
 (musicctl "next" "Return" "n" "next" "playlist_next 1")
 (musicctl "prev" "<" "q" "prev" "playlist_prev 1")
@@ -47,10 +56,13 @@
 (define-command 'mplayer-slow-down slow-down-mplayer-or-mpd)
 (define-command 'mplayer-normal-speed speed-reset-mplayer-or-mpd)
 
+(volumectl "volume-up" "0" "add volume 2" "2%+")
+(volumectl "volume-down" "9" "add volume -2" "2%-")
+
 ;; Volume keybindings
 (bind-keys global-keymap
-	   "W-]" '(system "amixer set Master 2%+ &")
-	   "W-[" '(system "amixer set Master 2%- &")
+	   "W-]" '(volume-up-mpv)
+	   "W-[" '(volume-down-mpv)
 	   "W-{" 'mplayer-or-mpd-rw
 	   "W-}" 'mplayer-or-mpd-ff
 	   "W-C-]" 'mplayer-speed-up
