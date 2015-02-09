@@ -32,7 +32,7 @@
       (if win
 	  (synthesize-event ,mplayerdo win)
 	(if (not (eq (system ,(concat "~/.sawfish/scripts/mpv-volume-ctl.sh " mpvcommand)) 0))
-	    (system (concat "amixer set Master " " &")))))))
+	    (system (concat "amixer set Master " ,amount " &")))))))
 
 (musicctl "play" "SPACE" "p" "toggle" "cycle pause")
 (musicctl "next" "Return" "n" "next" "playlist_next 1")
