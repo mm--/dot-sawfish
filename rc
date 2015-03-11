@@ -308,6 +308,7 @@ not during restarts."
 
 (require 'dictator-scratch)
 (require 'test-screenshot)
+(require 'record-window)
 (require 'josh-window)
 (require 'josh-wallpaper)
 (require 'josh-music-hotkeys)
