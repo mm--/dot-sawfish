@@ -147,18 +147,18 @@
 
 ;; Window Matchers
 
-( add-window-matcher '( ( WM_CLASS . "^Sawfishpager/sawfishpager$" ) )
-       '( ( position . south-east )
-          ( fixed-positon . t )
-          ( never-maximize . t )
-          ( never-iconify . t )
-          ( frame-type . none )
-          ( cycle-skip . t )
-          ( window-list-skip . t )
-          ( sticky . t )
-	  ( avoid . () )		;So we can maximize over this guy
-          ( sticky-viewport . t )
-          ( depth .  16 ) ) )
+;; ( add-window-matcher '( ( WM_CLASS . "^Sawfishpager/sawfishpager$" ) )
+;;        '( ( position . south-east )
+;;           ( fixed-positon . t )
+;;           ( never-maximize . t )
+;;           ( never-iconify . t )
+;;           ( frame-type . none )
+;;           ( cycle-skip . t )
+;;           ( window-list-skip . t )
+;;           ( sticky . t )
+;; 	  ( avoid . () )		;So we can maximize over this guy
+;;           ( sticky-viewport . t )
+;;           ( depth .  16 ) ) )
 
 ( add-window-matcher '( ( WM_CLASS . "^Emacs/emacs$" ) )
        '( ( group . Emacs ) ))
