@@ -1,9 +1,10 @@
 #!/bin/bash
 # This is a a small script made to track and limit how much time I
 # spend on my computer each day. If I exceed a threshold for the day, the computer goes to sleep.
+# Install xprintidle to view idle time
 POLLTIME=25
 if [ -n "$2" ]; then
-    POLLTIME=$1
+    POLLTIME=$2
 fi
 COUNTER=0
 if [ -n "$1" ]; then
@@ -22,8 +23,7 @@ SAVEDTIME=`date +"%Y-%m-%d %H:%M"`
 
 while :
 do
-    if pgrep i3lock ||
-       pgrep xtrlock
+    if [ -e "$HOME/.sawfish/pipes/lockscreen" ]
     then
 	echo "Screen locked"
 	LOCKED="TRUE"
@@ -46,13 +46,16 @@ do
 	    sleep 300		# If we re-awake, give 5 minutes time?
 	fi
     fi
+
+    IDLETIME=`xprintidle`
+    WORKSPACE=`sawfish-client -e current-workspace`
     
     UNIXTIME=`date +"%s"`
     THETIME=`date +"%Y-%m-%d %H:%M"`
     if [ "$SAVEDTIME" != "$THETIME" ]
     then
 	SAVEDTIME="$THETIME"
-	echo "\"$DATE\"","\"$THETIME\",$UNIXTIME,$COUNTER,$LOCKED,$POLLTIME" >> ~/.sawfish/data/computertime.csv
+	echo "\"$DATE\"","\"$THETIME\",$UNIXTIME,$COUNTER,$LOCKED,$IDLETIME,$WORKSPACE,$POLLTIME" | tee -a ~/.sawfish/data/computertime.csv
     fi
 
     echo "TIME IS $THETIME"
