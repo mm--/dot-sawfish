@@ -312,6 +312,7 @@ not during restarts."
 (require 'josh-window)
 (require 'josh-wallpaper)
 (require 'josh-music-hotkeys)
+(require 'copy-paste)
 
 ;; (require 'sawfish.wm.ext.cabinet)
 ;; (bind-keys global-keymap "W-s" 'cabinet-switch)
