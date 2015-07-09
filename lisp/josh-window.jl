@@ -133,3 +133,47 @@
 	   "W-q" '(popup-menu (josh-menu-gen 'show-hide josh-bindings)))
 
 (josh-bind-numbers)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Go to window
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar josh-go-to-window-alist nil)
+
+(define (josh-go-to-menu-gen action bindings)
+  "Generate a menu doing ACTION for each member of BINDINGS."
+  (mapcar
+   (lambda (x) (let* ((apair (assoc x josh-go-to-window-alist))
+		      (aworkspace (cadr apair))
+		      (awin (caddr apair)))
+		 (cons (concat "_" x
+			       (when (and awin (window-id awin)) (concat " -> " (window-name awin))))
+		       (cond ((eq action 'bind) (list (list 'josh-go-to-bind x current-workspace (input-focus))))
+			     ((eq action 'goto) (list (list 'josh-go-to aworkspace awin)))))))
+   (if (eq action 'bind) bindings
+     (filter (lambda (x) (let* ((awin (caddr (assoc x josh-go-to-window-alist))))
+			   (and awin (window-id awin))))
+	     bindings))))
+
+(define (josh-go-to-bind binding workspace window)
+  "Bind WORKSPACE and WINDOW to BINDING in josh-go-to-window-alist"
+  ;; (display-message (concat "Binding " binding " to " (window-name window)))
+  (add-to-list josh-go-to-window-alist (list binding workspace window)))
+
+(define (josh-go-to workspace window)
+  "Go to WORKSPACE and WINDOW"
+  (select-workspace workspace)
+  (display-window-without-focusing window)
+  (unless (equal (query-pointer-window) window)
+    (let* ((frame-dim (window-frame-dimensions window))
+	   (pos (window-position window))
+	   (x (car pos))
+	   (y (cdr pos))
+	   (halfwidth (round (/ (car frame-dim) 2)))
+	   (halfheight (round (/ (cdr frame-dim) 2))))
+      ;; (display-message (concat (prin1-to-string halfwidth) " " (prin1-to-string halfheight)))
+      (warp-cursor (+ x halfwidth) (+ y halfheight))))
+  (input-focus window))
+
+(bind-keys global-keymap
+	   "W-C-g" '(popup-menu (josh-go-to-menu-gen 'bind josh-bindings (input-focus)))
+	   "W-g" '(popup-menu (josh-go-to-menu-gen 'goto josh-bindings)))
