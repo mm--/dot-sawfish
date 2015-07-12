@@ -138,6 +138,7 @@
 ;; Go to window
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar josh-go-to-window-alist nil)
+(defvar josh-go-to-previous-cell (cons nil nil))
 
 (define (josh-go-to-menu-gen action bindings)
   "Generate a menu doing ACTION for each member of BINDINGS."
@@ -161,6 +162,7 @@
 
 (define (josh-go-to workspace window)
   "Go to WORKSPACE and WINDOW"
+  (setq josh-go-to-previous-cell (cons current-workspace (input-focus)))
   (select-workspace workspace)
   (display-window-without-focusing window)
   (unless (equal (query-pointer-window) window)
@@ -174,6 +176,14 @@
       (warp-cursor (+ x halfwidth) (+ y halfheight))))
   (input-focus window))
 
+(define (josh-go-to-previous)
+  "Go to the previous window before last goto command."
+  (let* ((theworkspace (car josh-go-to-previous-cell))
+	 (thewindow (cdr josh-go-to-previous-cell)))
+    (when (and theworkspace thewindow)
+      (josh-go-to theworkspace thewindow))))
+
 (bind-keys global-keymap
 	   "W-C-g" '(popup-menu (josh-go-to-menu-gen 'bind josh-bindings (input-focus)))
-	   "W-g" '(popup-menu (josh-go-to-menu-gen 'goto josh-bindings)))
+	   "W-g" '(popup-menu (josh-go-to-menu-gen 'goto josh-bindings))
+	   "W-S-g" '(josh-go-to-previous))
