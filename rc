@@ -296,7 +296,8 @@ not during restarts."
 
 (bind-keys global-keymap
 	   "XF86MonBrightnessUp" '(system "xbacklight -inc 10% &")
-	   "XF86MonBrightnessDown" '(system "xbacklight -dec 10% &"))
+	   "XF86MonBrightnessDown" '(system "xbacklight -dec 10% &")
+	   "S-XF86MonBrightnessDown" '(system "xbacklight -set 1 &"))
 
 (bind-keys global-keymap
 	   "XF86Launch1" '(system "mplayer -fs ~/video/NitoriGetDown.mp4 &"))
