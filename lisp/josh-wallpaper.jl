@@ -35,14 +35,14 @@
 (define (josh-lockscreen)
   "Lock the screen"
   (if josh-current-wallpaper
-      (system (concat "i3lock -d -i " josh-current-wallpaper " &" ))
-    (system  "i3lock -d -c 101010 &")))
+      (system (concat "~/.sawfish/scripts/lockscreen-run.sh i3lock -d -i " josh-current-wallpaper " &" ))
+    (system  "~/.sawfish/scripts/lockscreen-run.sh i3lock -d -c 101010 &")))
 
 (define-command 'josh-lockscreen josh-lockscreen)
 
 (define (josh-fingerprint-lockscreen)
   "Lock the screen, fingerprint deactivate"
-  (system (concat "~/.sawfish/scripts/fingerprint-lock.sh " josh-current-wallpaper " &" )))
+  (system (concat "~/.sawfish/scripts/lockscreen-run.sh ~/.sawfish/scripts/fingerprint-lock.sh " josh-current-wallpaper " &" )))
 
 (define-command 'josh-fingerprint-lockscreen josh-fingerprint-lockscreen)
 
