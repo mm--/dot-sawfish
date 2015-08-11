@@ -100,6 +100,9 @@
 	    "W-f"     '( system "firefox &" )
 	    "W-S-f"     '( system "firefox -private-window &" ))
 
+;; Open last download
+( bind-keys global-keymap
+	    "W-S-d"     '( system "~/.sawfish/scripts/open-last-download.sh &" ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bind workspaces to keys
