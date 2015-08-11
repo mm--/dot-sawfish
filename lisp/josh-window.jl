@@ -186,4 +186,5 @@
 (bind-keys global-keymap
 	   "W-C-g" '(popup-menu (josh-go-to-menu-gen 'bind josh-bindings (input-focus)))
 	   "W-g" '(popup-menu (josh-go-to-menu-gen 'goto josh-bindings))
-	   "W-S-g" '(josh-go-to-previous))
+	   "W-S-g" '(josh-go-to-previous)
+	   "W-C-p" '(josh-go-to-previous))
