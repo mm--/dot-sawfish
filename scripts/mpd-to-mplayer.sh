@@ -12,5 +12,5 @@ POSITION=$(mpc -f "%position%" | head -n1)
 
 cd $MUSICDIR
 # mpc playlist -f "%file%" | sed -n "$POSITION"',$p' | mplayer -slave -input file=~/.sawfish/pipes/mplayerfifo -vo null -playlist -
-mpc playlist -f "%file%" | sed -n "$POSITION"',$p' | mpv --load-scripts=yes --input-file=$HOME/.sawfish/pipes/mplayerfifo -playlist -
+mpc playlist -f "%file%" | sed -n "$POSITION"',$p' | mpv --force-window --load-scripts=yes --input-file=$HOME/.sawfish/pipes/mplayerfifo -playlist -
 
