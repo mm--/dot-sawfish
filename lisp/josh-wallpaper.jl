@@ -42,7 +42,7 @@
 
 (define (josh-fingerprint-lockscreen)
   "Lock the screen, fingerprint deactivate"
-  (system (concat "~/.sawfish/scripts/lockscreen-run.sh ~/.sawfish/scripts/fingerprint-lock.sh " josh-current-wallpaper " &" )))
+  (system (concat "xterm -e ~/.sawfish/scripts/lockscreen-run.sh ~/.sawfish/scripts/fingerprint-lock.sh " josh-current-wallpaper " &" )))
 
 (define-command 'josh-fingerprint-lockscreen josh-fingerprint-lockscreen)
 
