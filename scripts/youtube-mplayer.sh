@@ -23,7 +23,7 @@ done
 YTURL=$(xclip -o)
 echo Downloading from url $YTURL
 
-OUTPUT=$(youtube-dl --no-playlist -g -e -o "$STRTEMP" --cookies=/tmp/ytcookie.txt $OTHERARGS --get-filename -v "$YTURL")
+OUTPUT=$(youtube-dl --no-playlist -g -e -o "$STRTEMP" --format webm/mp4/flv/best --cookies=/tmp/ytcookie.txt $OTHERARGS --get-filename -v "$YTURL")
 if [ -n "$DOWNLOAD" ]; then
    SAVELOC=$(echo "$OUTPUT" | sed -n '3p')
    echo Saving in location $SAVELOC
@@ -49,7 +49,8 @@ elif [ -n "$DOWNLOAD" ]; then
     wget --load-cookies /tmp/ytcookie.txt -U "$USERAGENT" "$URL" -O - | tee "$SAVELOC" | mpv --geometry=-0-0 --cache=8192 -title "$TITLE" -
 else
     echo "Mplayer direct stream"
-    mpv --geometry=-0-0 --cookies --cookies-file=/tmp/ytcookie.txt --user-agent="$USERAGENT" -title "$TITLE" "$URL"
+    mpv --geometry=-0-0 --ytdl --ytdl-format=bestvideo+bestaudio "$YTURL"
+    # mpv --geometry=-0-0 --cookies --cookies-file=/tmp/ytcookie.txt --user-agent="$USERAGENT" -title "$TITLE" "$URL"
 fi
 sleep 10
 
