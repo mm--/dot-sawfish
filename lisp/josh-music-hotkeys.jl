@@ -70,6 +70,7 @@
 	   "W-C-BackSpace" 'mplayer-normal-speed
 	   "XF86AudioRaiseVolume" '(system "amixer set Master 2%+ &")
 	   "XF86AudioLowerVolume" '(system "amixer set Master 2%- &")
+	   "XF86AudioMute" '(system "amixer set Master toggle &")
 	   "XF86AudioPlay" 'play-mplayer-or-mpd
 	   "S-XF86AudioPlay" 'stop-mplayer-or-mpd
 	   "XF86AudioPause" 'stop-mplayer-or-mpd
