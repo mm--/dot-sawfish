@@ -8,6 +8,7 @@
 	    "W-m" 'maximize-window-toggle
 	    "W-v" 'maximize-window-vertically-toggle
 	    "W-h" 'maximize-window-horizontally-toggle
+	    "W-u" 'maximize-window-fullscreen-toggle
 	    "W-f" 'maximize-fill-window-toggle)
 
 (define term-keymap (make-keymap))
