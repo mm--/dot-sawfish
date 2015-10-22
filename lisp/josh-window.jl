@@ -27,8 +27,11 @@
 (define (josh-hide window)
   "Copy it to the junk workspace so we don't close it. Then remove it from this workspace."
   (josh-copy-window-to-junk window)
-  (setq josh-hide-list (cons window (delq window josh-hide-list)))
-  (delete-window-instance window))
+  (let ((had-focus (equal window (input-focus))))
+    (setq josh-hide-list (cons window (delq window josh-hide-list)))
+    (delete-window-instance window)
+    (if had-focus
+	(set-input-focus (query-pointer-window)))))
 
 (define-command 'josh-hide josh-hide #:spec "%w")
 
