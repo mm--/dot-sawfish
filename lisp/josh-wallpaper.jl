@@ -27,7 +27,7 @@
   (let ((wallpaper (cdr (assoc current-workspace josh-wallpaper))))
     (when wallpaper
       (setq josh-current-wallpaper wallpaper)
-      (system (concat "fvwm-root -r " wallpaper " &")))))
+      (system (concat "feh --bg-fill " wallpaper " &")))))
 
 (add-hook 'enter-workspace-hook josh-wallpaper-change)
 (add-hook 'after-initialization-hook josh-wallpaper-change)
