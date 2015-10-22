@@ -6,4 +6,4 @@ nm-applet &
 /usr/lib/notification-daemon/notification-daemon &
 ~/code/sh/lockscreen-demon.sh &
 xset r rate 200 60 &
-emacs &
+# emacs &
