@@ -1,6 +1,6 @@
 ;; subdivide.jl 0.1 -- Functions to resize a window in half.
 ;;
-;; Copyright (C) 2013 Joshua Moller-Mara <j.moller-mara@berkeley.ed>
+;; Copyright (C) 2013 Joshua Moller-Mara <j.moller-mara@berkeley.edu>
 ;;
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the same terms as sawfish (the window manager), or at your
