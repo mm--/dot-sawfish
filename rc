@@ -319,6 +319,14 @@ not during restarts."
 (require 'josh-music-hotkeys)
 (require 'copy-paste)
 
+;;  Load undo
+(setq load-path (cons "~/.sawfish/next-lisp/" load-path))
+(require 'undo)
+
+(bind-keys global-keymap
+	   "W-z" 'undo
+	   "W-C-z" 'undo-redo)
+
 ;; (require 'sawfish.wm.ext.cabinet)
 ;; (bind-keys global-keymap "W-s" 'cabinet-switch)
 ;; (nconc cabinet-filter-out-for-display-list
