@@ -317,6 +317,7 @@ not during restarts."
 (require 'josh-window)
 (require 'josh-wallpaper)
 (require 'josh-music-hotkeys)
+(require 'padded-maximize)
 (require 'copy-paste)
 
 ;;  Load undo
