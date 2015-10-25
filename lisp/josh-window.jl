@@ -76,9 +76,16 @@
 	    ((commandp prog) (call-command prog))
 	    (t (user-eval prog)))))
 
+(define (josh-show-hide-video)
+  (let ((w (or (get-window-by-class "mplayer2" #:regex t)
+	       (get-window-by-class "mpv" #:regex t))))
+    (when w
+      (josh-show-hide w)
+      (set-input-focus (query-pointer-window))))) ;Don't automatically focus
+
 (bind-keys global-keymap
 	   "W-n" '(josh-show-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t)
-	   "W-y" '(josh-show-hide (or (get-window-by-class "mplayer2" #:regex t) (get-window-by-class "mpv" #:regex t)))
+	   "W-y" '(josh-show-hide-video)
 	   "W-C-y" '(josh-show-hide-sticky (get-window-by-class "MPlayer" #:regex t)))
 
 (bind-keys global-keymap
