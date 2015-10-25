@@ -239,6 +239,9 @@
 	   "t" '(toggle-opacity-viewport)
 	   "W-t" '(toggle-opacity-viewport))
 
+(bind-keys global-keymap
+	   "W-i" '(binary-tile-master (input-focus) 20))
+
 (require 'sawfish.wm.placement.smart)
 ( bind-keys subd-keymap
 	    "f" '(sp-do-placement (input-focus) sp-first-fit)
