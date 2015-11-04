@@ -19,6 +19,7 @@
 ( bind-keys emacs-keymap
 	    "a" '( jump-or-exec "Aptitude" "xterm -title Aptitude -e 'sudo aptitude'" )
 	    "o" '( system "emacsclient -e '(org-clock-out)' -e '(org-save-all-org-buffers)' &" )
+	    "x" '( system "emacsclient -e '(org-clock-cancel)' -e '(org-save-all-org-buffers)' &" )
 	    "b" '( jump-or-exec "UC Berkeley Mail" "chromium --new-window http://bmail.berkeley.edu" t )
 	    "m" '( jump-or-exec "\\*Man" "emacsclient -c -e '(call-interactively (quote man))'" t )
 	    "c" '( jump-or-exec "Google Calendar" "chromium --new-window http://calendar.google.com" t ))
