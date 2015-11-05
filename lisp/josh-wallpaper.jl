@@ -22,9 +22,11 @@
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/PlMvMqN.png" 11)
 (josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/UFeXPN5.png" 12)
 
+(defvar josh-default-wallpaper "/home/jm3/.fvwm/wallpaper/ice-cube-berg-wallpaper.png")
 
 (define (josh-wallpaper-change)
-  (let ((wallpaper (cdr (assoc current-workspace josh-wallpaper))))
+  (let ((wallpaper (or (cdr (assoc current-workspace josh-wallpaper))
+		       josh-default-wallpaper)))
     (when wallpaper
       (setq josh-current-wallpaper wallpaper)
       (system (concat "feh --bg-fill " wallpaper " &")))))
@@ -49,3 +51,73 @@
 (bind-keys global-keymap
 	   "W-l" 'josh-lockscreen
 	   "W-M-S-l" 'josh-fingerprint-lockscreen)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Workspace letters to numbers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar josh-workspace-map
+  '(("a" . 13)
+    ("b" . 14)
+    ("c" . 15)
+    ("d" . 16)
+    ("e" . 17)
+    ("f" . 18)
+    ("g" . 19)
+    ("h" . 20)
+    ("i" . 21)
+    ("j" . 22)
+    ("k" . 23)
+    ("l" . 24)
+    ("m" . 25)
+    ("n" . 26)
+    ("o" . 27)
+    ("p" . 28)
+    ("q" . 29)
+    ("r" . 30)
+    ("s" . 31)
+    ("t" . 32)
+    ("u" . 33)
+    ("v" . 34)
+    ("w" . 35)
+    ("x" . 36)
+    ("y" . 37)
+    ("z" . 38)
+    ("0" . 39)
+    ("1" . 40)
+    ("2" . 41)
+    ("3" . 42)
+    ("4" . 43)
+    ("5" . 44)
+    ("6" . 45)
+    ("7" . 46)
+    ("8" . 47)
+    ("9" . 48)))
+
+(define (josh-workspace-menu-gen)
+  "Generate a menu doing ACTION for each member of BINDINGS."
+  (mapcar
+   (lambda (x) (let* ((letter (car x))
+		      (desknum (cdr x)))
+		 (cons (concat "_" letter)
+		       (list (list 'select-workspace desknum)))))
+   josh-workspace-map))
+
+(define (josh-workspace-num letter)
+  "Get a workspace number from a letter"
+  (cdr (assoc letter josh-workspace-map)))
+
+(bind-keys global-keymap
+	   "W-d"  '(popup-menu (josh-workspace-menu-gen)))
+
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/hov5xGE.png" (josh-workspace-num "p"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/giantscauseway-wallpaper.png" (josh-workspace-num "q")
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/ice-cube-berg-wallpaper.png" (josh-workspace-num "a"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/oeqiwuN-wallpaper.png" (josh-workspace-num "b"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/LEfcStC-wallpaper.png" (josh-workspace-num "c"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/KaPoFDj-wallpaper.png" (josh-workspace-num "e"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/16669224462_7e0cfb502f_h-wallpaper.png" (josh-workspace-num "f"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/sDv4w4L.png" (josh-workspace-num "u"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/macintosh-plus-wallpaper.png" (josh-workspace-num "m"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/lain1-wallpaper.png" (josh-workspace-num "l"))
+(josh-set-wallpaper-workspace "/home/jm3/.fvwm/wallpaper/neurons-wallpaper.png" (josh-workspace-num "n"))
