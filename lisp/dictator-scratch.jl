@@ -51,6 +51,8 @@
     ("Youtube Download _first" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -d -f &" ))
     ("Youtu_be download medium" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -m -d &" ))
     ("Youtube _Just Download" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -j &" ))
+    ()
+    ("Dragon clipboard _image" (system "xterm -e ~/.sawfish/scripts/dragon-url.sh &"))
     ))
 
 (define read-keymap (make-keymap))
