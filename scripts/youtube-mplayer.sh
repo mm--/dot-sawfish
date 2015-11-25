@@ -3,10 +3,11 @@
 STRTEMP="$HOME/video/youtube/%(title)s-%(id)s.%(ext)s"
 
 OTHERARGS=""
+MPVFORMAT="bestvideo+bestaudio/webm/mp4/flv/best"
 SAVELOC="/dev/null"
 while getopts "mdfj" arg; do
 case $arg in
-    m) OTHERARGS="--max-quality 18"
+    m) MPVFORMAT="webm[height=480]+bestaudio"
        ;;
     f) DOWNLOADFIRST="1"
        DOWNLOAD="1"
@@ -49,7 +50,7 @@ elif [ -n "$DOWNLOAD" ]; then
     wget --load-cookies /tmp/ytcookie.txt -U "$USERAGENT" "$URL" -O - | tee "$SAVELOC" | mpv --geometry=-0-0 --cache=8192 -title "$TITLE" -
 else
     echo "Mplayer direct stream"
-    mpv --geometry=-0-0 --ytdl --ytdl-format=bestvideo+bestaudio "$YTURL"
+    mpv --geometry=-0-0 --ytdl --ytdl-format="$MPVFORMAT" "$YTURL"
     # mpv --geometry=-0-0 --cookies --cookies-file=/tmp/ytcookie.txt --user-agent="$USERAGENT" -title "$TITLE" "$URL"
 fi
 sleep 10
