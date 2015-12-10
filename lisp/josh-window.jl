@@ -84,7 +84,7 @@
       (set-input-focus (query-pointer-window))))) ;Don't automatically focus
 
 (bind-keys global-keymap
-	   "W-n" '(josh-show-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t)
+	   ;; "W-n" '(josh-show-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t)
 	   "W-y" '(josh-show-hide-video)
 	   "W-C-y" '(josh-show-hide-sticky (get-window-by-class "MPlayer" #:regex t)))
 
