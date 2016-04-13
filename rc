@@ -239,7 +239,10 @@
 	    "W-e" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'right) 'up) 20))
 	    "W-c" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'right) 'down) 20))
 	    "W-q" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'left) 'up) 20))
-	    "W-z" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'left) 'down) 20)))
+	    "W-z" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'left) 'down) 20))
+	    "v" '(fan-windows-all 20 20)
+	    "f" '(fan-windows-master (input-focus) 20 20)
+	    )
 
 (bind-keys subd-keymap
 	   "t" '(toggle-opacity-viewport)

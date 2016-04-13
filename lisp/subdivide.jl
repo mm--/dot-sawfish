@@ -176,4 +176,51 @@ left. Optional padding."
     (mapcar (lambda (x) (true-move x (shrink-rect (breakme (tree-place (setq pos (+ 1 pos)) length vertical) rect) pad)))
 	    windows)))
 
+;; Fan stacking.
+;; Stacking so we can see the corners
+
+(define (fan-stack rect incx incy #!optional amount pos)
+  "Calculates a rectangle for basically 'fanning' out windows,
+like how you would spread a deck of cards. We fan them by
+increasing by incx and incy. Amount is the number of rectangles
+we're fanning and pos is the position of this specific
+rectangle."
+  (let* ((amount (or amount 2))
+	 (pos (or pos 1))
+	 (width  (- (rect-right rect) (rect-left rect)))
+	 (height (- (rect-bottom rect) (rect-top rect)))
+	 (x (rect-left rect))
+	 (y (rect-top rect))
+	 (scale-wx (round (- width (* incx (- amount 1)))))
+	 (scale-wy (round (- height (* incy (- amount 1)))))
+	 (weight (nth 4 rect))
+	 (newx (+ x (* (- pos 1) incx)))
+	 (newy (+ y (* (- pos 1) incy))))
+    (list newx newy
+	  (+ newx scale-wx) (+ newy scale-wy)
+	  weight)))
+
+
+(define (fan-windows windows rect #!optional fan pad)
+  "Spread windows out like a deck of cards."
+  (let* ((length (apply + (mapcar (lambda (x) 1) windows))) ;I have no idea how to get the list length. :( I'm so sorry
+	 (pos 0)
+	 (fan (or fan 20))
+	 (pad (or pad 0)))
+    (mapcar (lambda (x) (true-move x (fan-stack rect fan fan length (setq pos (+ 1 pos)))))
+	    windows)))
+
+(define (fan-windows-all fan pad)
+  "A binary tiling scheme, with selected master window on the
+left. Optional padding."
+  (fan-windows (viewport-windows-filtered) (shrink-rect (calculate-workarea) pad) fan pad))
+
+(define (fan-windows-master w fan pad)
+  "Fan all windows except the master window."
+  (let ((others (viewport-windows-except w)))
+    (if (not others)
+	(true-move w (shrink-rect (calculate-workarea) pad))
+      (true-move w (shrink-rect (subd (calculate-workarea) 'left) pad))
+      (fan-windows others (shrink-rect (subd (calculate-workarea) 'right) pad) fan pad))))
+
 (provide 'subdivide)
