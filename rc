@@ -240,8 +240,8 @@
 	    "W-c" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'right) 'down) 20))
 	    "W-q" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'left) 'up) 20))
 	    "W-z" '(true-move (input-focus) (shrink-rect (subd (subd (calculate-workarea) 'left) 'down) 20))
-	    "v" '(fan-windows-all 20 20)
-	    "f" '(fan-windows-master (input-focus) 20 20)
+	    "W-v" '(fan-windows-all 20 20)
+	    "W-f" '(fan-windows-master (input-focus) 20 20)
 	    )
 
 (bind-keys subd-keymap
@@ -249,7 +249,8 @@
 	   "W-t" '(toggle-opacity-viewport))
 
 (bind-keys global-keymap
-	   "W-i" '(binary-tile-master (input-focus) 20))
+	   "W-i" '(binary-tile-master (input-focus) 20)
+	   "W-C-i" '(fan-windows-all 20 20))
 
 (require 'sawfish.wm.placement.smart)
 ( bind-keys subd-keymap
