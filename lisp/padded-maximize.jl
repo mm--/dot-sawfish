@@ -32,4 +32,5 @@
 	    "W-u" 'maximize-window-fullscreen-toggle)
 
 (bind-keys global-keymap
-	   "W-C-Button1-Click" '(padded-maximize maximize-fill-window-toggle))
+	   "W-C-Button1-Click" '(padded-maximize maximize-fill-window-toggle)
+	   "W-C-m" '(padded-maximize maximize-window-toggle))
