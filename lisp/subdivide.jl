@@ -142,9 +142,15 @@ not taking into account frame dimensions. This helps with that"
 (define (viewport-windows-except w)
   (delete-if (lambda (x) (eq w x)) (viewport-windows-filtered)))
 
+;; (define (viewport-windows-filtered)
+;;   (delete-if (lambda (x) (or (window-ignored-p x)
+;; 			     (window-avoided-p x))) (viewport-windows)))
+
 (define (viewport-windows-filtered)
-  (delete-if (lambda (x) (or (window-ignored-p x)
-			     (window-avoided-p x))) (viewport-windows)))
+  (delete-if (lambda (x) (or (not (window-in-workspace-p x current-workspace))
+			     (window-outside-viewport-p x)
+			     (window-ignored-p x)
+			     (window-avoided-p x))) (stacking-order)))
 
 (define (shrink-rect rect amount)
   "Shrink the rectangle by some amount. If there's no amount,
@@ -187,6 +193,7 @@ we're fanning and pos is the position of this specific
 rectangle."
   (let* ((amount (or amount 2))
 	 (pos (or pos 1))
+	 (reversepos (+ (- amount pos) 1))
 	 (width  (- (rect-right rect) (rect-left rect)))
 	 (height (- (rect-bottom rect) (rect-top rect)))
 	 (x (rect-left rect))
@@ -194,12 +201,11 @@ rectangle."
 	 (scale-wx (round (- width (* incx (- amount 1)))))
 	 (scale-wy (round (- height (* incy (- amount 1)))))
 	 (weight (nth 4 rect))
-	 (newx (+ x (* (- pos 1) incx)))
-	 (newy (+ y (* (- pos 1) incy))))
+	 (newx (+ x (* (- reversepos 1) incx)))
+	 (newy (+ y (* (- reversepos 1) incy))))
     (list newx newy
 	  (+ newx scale-wx) (+ newy scale-wy)
 	  weight)))
-
 
 (define (fan-windows windows rect #!optional fan pad)
   "Spread windows out like a deck of cards."
