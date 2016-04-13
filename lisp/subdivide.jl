@@ -129,7 +129,7 @@ not taking into account frame dimensions. This helps with that"
 	      'right)
       (if (eq leftorright 'left) 'up
 	      'down)))
-  (let ((half (ceiling (/ of 2))))
+  (let ((half (floor (/ of 2))))
     (cond ((= of 1) nil)
 	  (t (if (<= x half) (cons (altdir 'left) (tree-place x half (not alt)))
 	       (cons (altdir 'right) (tree-place (- x half) (- of half) (not alt))))))))
