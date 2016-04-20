@@ -47,7 +47,7 @@
     ("j_etzt" ( system "~/.sawfish/scripts/jetzt-clip.sh &" ))
     ("_Dictator" ( system "~/.sawfish/scripts/dictator-clip.sh &" ))
     ("Dictator _Url Goose" ( system "~/.sawfish/scripts/goose-dictator.sh &" ))
-    ("Dictator _popup" dictator-popup-and-shrink)
+    ("Dictator popup" dictator-popup-and-shrink)
     ("_Youtube player" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh &" ))
     ("Youtube _medium" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -m &" ))
     ("Youtube Dow_nload" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -d &" ))
@@ -56,6 +56,8 @@
     ("Youtube _Just Download" ( system "xterm -e ~/.sawfish/scripts/youtube-mplayer.sh -j &" ))
     ()
     ("Dragon clipboard _image" (system "xterm -e ~/.sawfish/scripts/dragon-url.sh &"))
+    ()
+    ("_Pass" ( system "xterm -e ~/.sawfish/scripts/pass.sh &" ))
     ))
 
 (define read-keymap (make-keymap))
