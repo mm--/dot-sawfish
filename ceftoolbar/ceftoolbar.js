@@ -49,13 +49,8 @@ function doUpdate(obj) {
     $("#ram").text(obj["RAM"]);
     $("#vol").text(obj["VOL"]);
     $("#bat").text(obj["BAT"]);
-    var batcol = obj["BATSTATUS"] == "Charging" ? "green" : "grey";
-    batcol = (obj["BATSTATUS"] == "Full") ? "lightgreen" : batcol;
-    var batstyle = (obj["BATSTATUS"] == "Charging" ||
-		    obj["BATSTATUS"] == "Full")
-		    ? "solid" : "none";
-    $("#bat").css("border-bottom-color", batcol);
-    $("#bat").css("border-bottom-style", batstyle);
+    var batweight = obj["BATSTATUS"] == "Discharging" ? "bold" : "normal";
+    $("#bat").css("font-weight", batweight);
     $("#bat").css('color', heatmapColour(1-(parseFloat(obj["BAT"])/100)));
     $("#temp0").text(obj["TEMP0"]);
     $("#temp1").text(obj["TEMP1"]);
