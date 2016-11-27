@@ -52,17 +52,6 @@
       (josh-hide window)
     (josh-show window sticky)))
 
-(define (josh-show-hide-sticky window)
-  "Show it if it's not focused. Hide it if it is."
-  (if (and  (window-in-workspace-p window current-workspace)
-	    (not (window-outside-viewport-p window))
-	    (not (window-obscured window)))
-      (progn
-	(make-window-unsticky window)
-	(josh-hide window))
-    (progn (josh-show window)
-	   (make-window-sticky/viewport window))))
-
 (define (josh-unhide)
   "Unhide a recently hidden window"
   (let* ((winassoc (car josh-hide-list))
@@ -89,17 +78,17 @@
 	    ((commandp prog) (call-command prog))
 	    (t (user-eval prog)))))
 
-(define (josh-show-hide-video)
+(define (josh-show-hide-video #!optional sticky)
   (let ((w (or (get-window-by-class "mplayer2" #:regex t)
 	       (get-window-by-class "mpv" #:regex t))))
     (when w
-      (josh-show-hide w)
+      (josh-show-hide w sticky)
       (set-input-focus (query-pointer-window))))) ;Don't automatically focus
 
 (bind-keys global-keymap
 	   ;; "W-n" '(josh-show-or-exec "NCMPC" "xterm -title NCMPC ncmpc" t)
 	   "W-y" '(josh-show-hide-video)
-	   "W-C-y" '(josh-show-hide-sticky (get-window-by-class "MPlayer" #:regex t)))
+	   "W-C-y" '(josh-show-hide-video t))
 
 (bind-keys global-keymap
 	   "W-h" 'josh-hide
