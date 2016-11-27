@@ -9,14 +9,14 @@
   (copy-to-next-workspace window 0 nil) ;0 spaces right
   (move-window-to-current-viewport window))
 
-(define (josh-show window #!optional sticky)
+(define (josh-show window #!optional sticky nofocus)
   "Copy it to this workspace, raise and focus"
   (when (window-id window)
     (josh-copy-window-here window)
     (show-window window)
     (raise-window window)
     (when sticky (make-window-sticky window))
-    (set-input-focus window)))
+    (unless nofocus (set-input-focus window))))
 
 (setq josh-hide-list ())
 (defvar josh-junk-workspace 12)
@@ -44,13 +44,13 @@
 
 (define-command 'josh-hide josh-hide #:spec "%w")
 
-(define (josh-show-hide window #!optional sticky)
+(define (josh-show-hide window #!optional sticky nofocus)
   "Show it if it's not focused. Hide it if it is."
   (if (and  (or (window-sticky-p window) (window-in-workspace-p window current-workspace))
 	    (not (window-outside-viewport-p window))
 	    (not (window-obscured window)))
       (josh-hide window)
-    (josh-show window sticky)))
+    (josh-show window sticky nofocus)))
 
 (define (josh-unhide)
   "Unhide a recently hidden window"
@@ -137,17 +137,18 @@
 
 (defvar josh-bindings (list "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z" "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"))
 
-(define (josh-show-hide-number num)
+(define (josh-show-hide-number num #!optional nofocus)
     "Show or hide the window bound to number NUM, respecting its sticky flag."
     (let* ((apair (assoc num josh-window-alist))
 	   (awin (cdr (assoc 'window (cdr apair))))
 	   (winsticky (cdr (assoc 'sticky (cdr apair)))))
-      (josh-show-hide awin winsticky)))
+      (josh-show-hide awin winsticky nofocus)))
 
 (define (josh-bind-numbers)
   "Bind josh-show and josh-bind-window to numbers."
   (mapc (lambda (i) (bind-keys global-keymap
-			       (concat "W-" i) `(josh-show-hide-number ,i)))
+			       (concat "W-" i) `(josh-show-hide-number ,i)
+			       (concat "W-C-" i) `(josh-show-hide-number ,i t)))
 	(list "0" "1" "2" "3" "4" "5" "6" "7" "8" "9")))
 
 (bind-keys global-keymap
