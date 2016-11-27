@@ -9,12 +9,13 @@
   (copy-to-next-workspace window 0 nil) ;0 spaces right
   (move-window-to-current-viewport window))
 
-(define (josh-show window)
+(define (josh-show window #!optional sticky)
   "Copy it to this workspace, raise and focus"
   (when (window-id window)
     (josh-copy-window-here window)
     (show-window window)
     (raise-window window)
+    (when sticky (make-window-sticky window))
     (set-input-focus window)))
 
 (setq josh-hide-list ())
@@ -24,11 +25,19 @@
   "Copy to junk workspace."
   (copy-window-to-workspace window (car (window-workspaces window)) josh-junk-workspace))
 
+
+(define (josh-delete-assoc-eq key val list)
+  "Delete all association lists that have a KEY of VAL"
+  (delete-if (lambda (x) (eq (cdr (assoc key x)) val)) list))
+
 (define (josh-hide window)
   "Copy it to the junk workspace so we don't close it. Then remove it from this workspace."
-  (josh-copy-window-to-junk window)
   (let ((had-focus (equal window (input-focus))))
-    (setq josh-hide-list (cons window (delq window josh-hide-list)))
+    (setq josh-hide-list (cons `((window . ,window)
+				 (sticky . ,(window-sticky-p window)))
+			       (josh-delete-assoc-eq 'window window josh-hide-list)))
+    (make-window-unsticky window)
+    (josh-copy-window-to-junk window)
     (delete-window-instance window)
     (if had-focus
 	(set-input-focus (query-pointer-window)))))
@@ -56,13 +65,17 @@
 
 (define (josh-unhide)
   "Unhide a recently hidden window"
-  (let ((win (car josh-hide-list)))
+  (let* ((winassoc (car josh-hide-list))
+	 (win (cdr (assoc 'window winassoc)))
+	 (sticky (cdr (assoc 'sticky winassoc))))
     (setq josh-hide-list (cdr josh-hide-list))
-    (josh-show win)))
+    (josh-show win sticky)))
 
 (define (josh-unhide-menu)
   "Generate a menu of recently hidden windows."
-  (mapcar (lambda (x) (cons (window-name x) (list (list 'josh-show-hide x)))) (delete-if-not window-id josh-hide-list)))
+  (mapcar (lambda (x) (let ((win (cdr (assoc 'window x))))
+			(cons (window-name win) (list (list 'josh-show-hide win)))))
+	  (delete-if-not (lambda (x) (window-id (cdr (assoc 'window x)))) josh-hide-list)))
 
 (define (josh-show-or-exec regex prog #!key match-class)
   "Like jump-or-exec, but copy the window here instead of us moving there."
