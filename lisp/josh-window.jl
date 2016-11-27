@@ -44,13 +44,13 @@
 
 (define-command 'josh-hide josh-hide #:spec "%w")
 
-(define (josh-show-hide window)
+(define (josh-show-hide window #!optional sticky)
   "Show it if it's not focused. Hide it if it is."
-  (if (and  (window-in-workspace-p window current-workspace)
+  (if (and  (or (window-sticky-p window) (window-in-workspace-p window current-workspace))
 	    (not (window-outside-viewport-p window))
 	    (not (window-obscured window)))
       (josh-hide window)
-    (josh-show window)))
+    (josh-show window sticky)))
 
 (define (josh-show-hide-sticky window)
   "Show it if it's not focused. Hide it if it is."
@@ -116,14 +116,16 @@
   "Generate a menu doing ACTION for each member of BINDINGS."
   (mapcar
    (lambda (x) (let* ((apair (assoc x josh-window-alist))
-		     (awin (cdr apair)))
+		      (awin (cdr (assoc 'window (cdr apair))))
+		      (winsticky (cdr (assoc 'sticky (cdr apair)))))
 		 (cons (concat "_" x
 			       (when (and awin (window-id awin)) (concat " -> " (window-name awin))))
 		       (cond ((eq action 'bind) (list (list 'josh-bind-window x (input-focus))))
-			     ((eq action 'show) (list (list 'josh-show awin)))
-			     ((eq action 'show-hide) (list (list 'josh-show-hide awin)))))))
+			     ((eq action 'show) (list (list 'josh-show awin winsticky)))
+			     ((eq action 'show-hide) (list (list 'josh-show-hide awin winsticky)))))))
    (if (eq action 'bind) bindings
-     (filter (lambda (x) (let* ((awin (cdr (assoc x josh-window-alist))))
+     (filter (lambda (x) (let* ((apair (assoc x josh-window-alist))
+				(awin (cdr (assoc 'window (cdr apair)))))
 			   (and awin (window-id awin))))
 	     bindings))))
 
@@ -138,17 +140,25 @@
 (define (josh-bind-window binding window)
   "Bind WINDOW to BINDING in josh-window-alist"
   ;; (display-message (concat "Binding " binding " to " (window-name window)))
-  (add-to-list josh-window-alist (cons binding window)))
+  (add-to-list josh-window-alist (cons binding `((window . ,window)
+						 (sticky . ,(window-sticky-p window))))))
 
 (bind-keys global-keymap
 	   "W-C-2" '(display-message "Hello"))
 
 (defvar josh-bindings (list "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z" "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"))
 
+(define (josh-show-hide-number num)
+    "Show or hide the window bound to number NUM, respecting its sticky flag."
+    (let* ((apair (assoc num josh-window-alist))
+	   (awin (cdr (assoc 'window (cdr apair))))
+	   (winsticky (cdr (assoc 'sticky (cdr apair)))))
+      (josh-show-hide awin winsticky)))
+
 (define (josh-bind-numbers)
   "Bind josh-show and josh-bind-window to numbers."
   (mapc (lambda (i) (bind-keys global-keymap
-			       (concat "W-" i) (list 'josh-show-hide (list 'cdr (list 'assoc i 'josh-window-alist)))))
+			       (concat "W-" i) `(josh-show-hide-number ,i)))
 	(list "0" "1" "2" "3" "4" "5" "6" "7" "8" "9")))
 
 (bind-keys global-keymap
