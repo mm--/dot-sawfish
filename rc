@@ -257,6 +257,12 @@
 	    "f" '(sp-do-placement (input-focus) sp-first-fit)
 	    "b" '(sp-do-placement (input-focus) sp-best-fit))
 
+;; Linked resizing of windows
+;; Basically resizing a window adjusts neighboring ones as well
+(require 'josh-linked-resize)
+(bind-keys window-keymap
+	   "W-C-Button3-Move" 'linked-resize-window-interactively)
+
 ;; I keep confusing Emacs's "search" and Chromium's "save"
 ;; (add-window-matcher
 ;;  '((WM_NAME . "Chromium"))
