@@ -229,4 +229,16 @@ left. Optional padding."
       (true-move w (shrink-rect (subd (calculate-workarea) 'left) pad))
       (fan-windows others (shrink-rect (subd (calculate-workarea) 'right) pad) fan pad))))
 
+(define (fan-win-area win rect #!optional fan pad)
+  "Put a window in the rectangle. If there are any windows
+intersecting that rectangle, fan them.
+This assumes you're fanning on the current viewport."
+  (let* ((win-rect (car (rectangles-from-windows (list win))))
+	 (other-rects (rectangles-from-windows (viewport-windows-except win) (lambda (x) x)))
+	 (intersecting-windows (filter windowp
+				       (mapcar (lambda (wr)
+						 (car (cddddr (rectangle-intersection wr rect))))
+					       other-rects))))
+    (fan-windows (cons win intersecting-windows) rect)))
+
 (provide 'subdivide)
