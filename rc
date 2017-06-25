@@ -316,10 +316,16 @@ not during restarts."
 	   "M--" 'decrease-max-windows
 	   "W-t" 'next-tiling)
 
+;; (bind-keys global-keymap
+;; 	   "XF86MonBrightnessUp" '(system "xbacklight -inc 2% &")
+;; 	   "XF86MonBrightnessDown" '(system "xbacklight -dec 2% &")
+;; 	   "S-XF86MonBrightnessDown" '(system "xbacklight -set 1 &"))
+
 (bind-keys global-keymap
-	   "XF86MonBrightnessUp" '(system "xbacklight -inc 2% &")
-	   "XF86MonBrightnessDown" '(system "xbacklight -dec 2% &")
-	   "S-XF86MonBrightnessDown" '(system "xbacklight -set 1 &"))
+	   "XF86MonBrightnessUp" '(system "sudo terrible-backlight up &")
+	   "XF86MonBrightnessDown" '(system "sudo terrible-backlight down &")
+	   "S-XF86MonBrightnessDown" '(system "sudo terrible-backlight minimum&"))
+
 
 (bind-keys global-keymap
 	   "XF86Launch1" '(system "mplayer -fs ~/video/NitoriGetDown.mp4 &"))
