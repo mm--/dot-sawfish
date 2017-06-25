@@ -34,11 +34,17 @@
 (add-hook 'enter-workspace-hook josh-wallpaper-change)
 (add-hook 'after-initialization-hook josh-wallpaper-change)
 
+;; (define (josh-lockscreen)
+;;   "Lock the screen"
+;;   (if josh-current-wallpaper
+;;       (system (concat "~/.sawfish/scripts/lockscreen-run.sh i3lock -d -i " josh-current-wallpaper " &" ))
+;;     (system  "~/.sawfish/scripts/lockscreen-run.sh i3lock -d -c 101010 &")))
+
 (define (josh-lockscreen)
   "Lock the screen"
   (if josh-current-wallpaper
-      (system (concat "~/.sawfish/scripts/lockscreen-run.sh i3lock -d -i " josh-current-wallpaper " &" ))
-    (system  "~/.sawfish/scripts/lockscreen-run.sh i3lock -d -c 101010 &")))
+      (system "xsecurelock saver_image &")
+    (system "xsecurelock saver_blank &")))
 
 (define-command 'josh-lockscreen josh-lockscreen)
 
