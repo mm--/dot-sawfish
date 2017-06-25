@@ -32,7 +32,7 @@
       (if win
 	  (synthesize-event ,mplayerdo win)
 	(if (not (eq (system ,(concat "~/.sawfish/scripts/mpv-volume-ctl.sh " mpvcommand)) 0))
-	    (system (concat "amixer set Master " ,amount " &")))))))
+	    (system (concat "pactl set-sink-volume 0 " ,amount " &")))))))
 
 (musicctl "play" "SPACE" "p" "toggle" "cycle pause")
 (musicctl "next" "Return" "n" "next" "playlist_next 1")
@@ -56,8 +56,8 @@
 (define-command 'mplayer-slow-down slow-down-mplayer-or-mpd)
 (define-command 'mplayer-normal-speed speed-reset-mplayer-or-mpd)
 
-(volumectl "volume-up" "0" "add volume 2" "2%+")
-(volumectl "volume-down" "9" "add volume -2" "2%-")
+(volumectl "volume-up" "0" "add volume 2" "+2%")
+(volumectl "volume-down" "9" "add volume -2" "-2%")
 
 ;; Volume keybindings
 (bind-keys global-keymap
@@ -68,9 +68,9 @@
 	   "W-C-]" 'mplayer-speed-up
 	   "W-C-[" 'mplayer-slow-down
 	   "W-C-BackSpace" 'mplayer-normal-speed
-	   "XF86AudioRaiseVolume" '(system "amixer set Master 2%+ &")
-	   "XF86AudioLowerVolume" '(system "amixer set Master 2%- &")
-	   "XF86AudioMute" '(system "amixer set Master toggle &")
+	   "XF86AudioRaiseVolume" '(system "pactl set-sink-volume 0 +2% &")
+	   "XF86AudioLowerVolume" '(system "pactl set-sink-volume 0 -2% &")
+	   "XF86AudioMute" '(system "pactl set-sink-mute 0 toggle &")
 	   "XF86AudioPlay" 'play-mplayer-or-mpd
 	   "S-XF86AudioPlay" 'stop-mplayer-or-mpd
 	   "XF86AudioPause" 'stop-mplayer-or-mpd
