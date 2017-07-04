@@ -7,6 +7,8 @@
 
 ;; Get the password
 ;; The file is of the form "MPD_HOST=PASS@localhost " with no newline
+(require 'josh-window)
+
 (setq mpdpassfile "~/.sawfish/mpdpassword")
 (setq mpdpass
       (if (file-exists-p mpdpassfile)
@@ -16,14 +18,21 @@
 	    pass)
 	nil))
 
-(defmacro musicctl (name mplayerdo pianodo mpcdo mpvcommand)
+;; Mostly used to control background YouTube windows
+(define (josh-get-music-window)
+  (cdadr (assoc "m" josh-window-alist)))
+
+(defmacro musicctl (name mplayerdo pianodo mpcdo mpvcommand musicwindo)
   `(define (,(intern (concat name "-mplayer-or-mpd")))
      (let ((win (or (get-window-by-class "mplayer2")
-		    (get-window-by-class "mpv"))))
-      (if win
-	  (synthesize-event ,mplayerdo win)
-	(if (not (eq (system ,(concat "~/.sawfish/scripts/pianobar-ctl.sh " pianodo " " mpvcommand)) 0))
-	    (system (concat mpdpass ,(concat "mpc " mpcdo " &"))))))))
+		    (get-window-by-class "mpv")))
+	   (musicwin (josh-get-music-window)))
+       (if win
+	   (synthesize-event ,mplayerdo win)
+	 (if musicwin
+	     (synthesize-event ,musicwindo musicwin)
+	   (if (not (eq (system ,(concat "~/.sawfish/scripts/pianobar-ctl.sh " pianodo " " mpvcommand)) 0))
+	       (system (concat mpdpass ,(concat "mpc " mpcdo " &")))))))))
 
 (defmacro volumectl (name mplayerdo mpvcommand amount)
   `(define (,(intern (concat name "-mpv")))
@@ -34,24 +43,24 @@
 	(if (not (eq (system ,(concat "~/.sawfish/scripts/mpv-volume-ctl.sh " mpvcommand)) 0))
 	    (system (concat "pactl set-sink-volume 0 " ,amount " &")))))))
 
-(musicctl "play" "SPACE" "p" "toggle" "cycle pause")
-(musicctl "next" "Return" "n" "next" "playlist_next 1")
-(musicctl "prev" "<" "q" "prev" "playlist_prev 1")
+(musicctl "play" "SPACE" "p" "toggle" "cycle pause" "SPACE")
+(musicctl "next" "Return" "n" "next" "playlist_next 1" "N")
+(musicctl "prev" "<" "q" "prev" "playlist_prev 1" "P")
 (define-command 'play-mplayer-or-mpd play-mplayer-or-mpd)
 (define-command 'next-mplayer-or-mpd next-mplayer-or-mpd)
 (define-command 'prev-mplayer-or-mpd prev-mplayer-or-mpd)
 
-(musicctl "stop" "q" "q" "stop" "quit")
+(musicctl "stop" "q" "q" "stop" "quit" "SPACE")
 (define-command 'stop-mplayer-or-mpd stop-mplayer-or-mpd)
 
-(musicctl "ff" "Right" "i" "seek +00:00:10 " "seek +5")
-(musicctl "rw" "Left" "i" "seek -00:00:10 " "seek -5")
+(musicctl "ff" "Right" "i" "seek +00:00:10 " "seek +5" "Right")
+(musicctl "rw" "Left" "i" "seek -00:00:10 " "seek -5" "Left")
 (define-command 'mplayer-or-mpd-ff ff-mplayer-or-mpd)
 (define-command 'mplayer-or-mpd-rw rw-mplayer-or-mpd)
 
-(musicctl "speed-up" "]" "i" "stats" "add speed 0.10")
-(musicctl "slow-down" "[" "i" "stats" "add speed -0.10")
-(musicctl "speed-reset" "BackSpace" "i" "stats" "set speed 1.00")
+(musicctl "speed-up" "]" "i" "stats" "add speed 0.10" ">")
+(musicctl "slow-down" "[" "i" "stats" "add speed -0.10" "<")
+(musicctl "speed-reset" "BackSpace" "i" "stats" "set speed 1.00" "<") ;No hotkey for resetting?
 (define-command 'mplayer-speed-up speed-up-mplayer-or-mpd)
 (define-command 'mplayer-slow-down slow-down-mplayer-or-mpd)
 (define-command 'mplayer-normal-speed speed-reset-mplayer-or-mpd)
