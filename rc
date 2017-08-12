@@ -256,6 +256,11 @@
 	    "f" '(sp-do-placement (input-focus) sp-first-fit)
 	    "b" '(sp-do-placement (input-focus) sp-best-fit))
 
+(require 'swap-windows)
+(bind-keys subd-keymap
+	  "g" 'josh-swap-window-interactively
+	  "W-g" 'josh-swap-window-interactively)
+
 ;; Linked resizing of windows
 ;; Basically resizing a window adjusts neighboring ones as well
 (require 'josh-linked-resize)
