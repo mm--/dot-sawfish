@@ -343,6 +343,7 @@ not during restarts."
 (require 'josh-music-hotkeys)
 (require 'padded-maximize)
 (require 'copy-paste)
+(require 'window-to-largest-rectangle)
 
 ;;  Load undo
 (setq load-path (cons "~/.sawfish/next-lisp/" load-path))
