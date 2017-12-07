@@ -30,5 +30,6 @@
 ( add-window-matcher '( ( WM_CLASS . "^Emacs/emacs$" ) )
 		     '( ( place-mode . half-viewport ) ))
 
-( add-window-matcher '( ( WM_CLASS . "Firefox" ) )
+( add-window-matcher '( ( WM_CLASS . "Firefox" )
+			( WM_WINDOW_ROLE . "browser") )
 		     '( ( place-mode . full-or-half-viewport ) ))
