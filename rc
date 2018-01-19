@@ -172,11 +172,6 @@
 
 (require 'place-window-half)
 
-( add-window-matcher '( ( WM_CLASS . "^Emacs/emacs$" ) )
-		     '( ( group . Emacs )
-			( place-mode . half-viewport ) ))
-
-
 ( add-window-matcher '( ( WM_CLASS . "TopLevelShell" ) )
 		     '( ( group . AFNI ) ))
 
