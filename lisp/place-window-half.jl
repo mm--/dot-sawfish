@@ -41,7 +41,7 @@
 set the frame correctly if some window-key bindings don't exist."
   (let* ((unbound-emacs (car (filter (lambda (binding)
 				       (let ((thewin (cdr (assoc 'window (assoc binding josh-window-alist)))))
-					 (not (when thewin (window-mapped-p thewin)))))
+					 (not (when thewin (window-id thewin)))))
 				   (mapcar car josh-emacs-bind-styles))))
        (unbound-style (cdr (assoc unbound-emacs josh-emacs-bind-styles))))
   (if unbound-emacs
