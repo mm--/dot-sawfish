@@ -43,8 +43,8 @@
 (define (josh-lockscreen)
   "Lock the screen"
   (if josh-current-wallpaper
-      (system "xsecurelock saver_image &")
-    (system "xsecurelock saver_blank &")))
+      (system "~/.sawfish/scripts/lockscreen-run.sh xsecurelock saver_image &")
+    (system "~/.sawfish/scripts/lockscreen-run.sh xsecurelock saver_blank &")))
 
 (define-command 'josh-lockscreen josh-lockscreen)
 
