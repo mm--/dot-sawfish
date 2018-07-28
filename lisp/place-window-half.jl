@@ -53,7 +53,7 @@ set the frame correctly if some window-key bindings don't exist."
 ( add-window-matcher '( ( WM_CLASS . "^Chromium/chromium$" ) )
 		     '( ( place-mode . full-or-half-viewport ) ))
 
-( add-window-matcher '( ( WM_CLASS . "^Emacs/emacs$" ) )
+( add-window-matcher '( ( WM_CLASS . "Emacs" ) )
 		     '( ( place-mode . emacs-half-viewport ) ))
 
 ( add-window-matcher '( ( WM_CLASS . "Firefox" )
