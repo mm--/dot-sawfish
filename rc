@@ -73,10 +73,10 @@
   "C-W-e"   'display-errors
   ;; "C-W-r"   'restart
   ;; "C-W-q"   'quit
-  "W-TAB"   'cycle-windows
+  ;; "W-TAB"   'cycle-windows
   "W-S-n"   '(next-workspace 1)
   "W-S-p"   '(previous-workspace 1)
-  "W-C-TAB"   'cycle-group
+  ;; "W-C-TAB"   'cycle-group
   "W-t"     term-keymap
   ;; "C-TAB"   'cycle-windows-backwards
   "W-M-S-l"   '(system "xterm -e ~/.sawfish/scripts/lockscreen-run.sh ~/.sawfish/scripts/fingerprint-lock.sh &")
@@ -355,6 +355,7 @@ not during restarts."
 (require 'padded-maximize)
 (require 'copy-paste)
 (require 'window-to-largest-rectangle)
+(require 'cycle-obscure)
 
 ;;  Load undo
 (setq load-path (cons "~/.sawfish/next-lisp/" load-path))
