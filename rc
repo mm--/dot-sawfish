@@ -356,6 +356,7 @@ not during restarts."
 (require 'copy-paste)
 (require 'window-to-largest-rectangle)
 (require 'cycle-obscure)
+(require 'other-window-stuff)
 
 ;;  Load undo
 (setq load-path (cons "~/.sawfish/next-lisp/" load-path))
