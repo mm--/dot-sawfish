@@ -59,6 +59,7 @@
 	    "W-Button4-Click" '(opacity-increment (input-focus) 5)
 	    "W-Button5-Click" '(opacity-increment (input-focus) -5)
 	    "M-F4" 'delete-window
+	    "W-C-k" 'delete-window 	; It's hard to Alt-F4 on certain keyboards
 	    )
 
 (require 'opacity-tools)

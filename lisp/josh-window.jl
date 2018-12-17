@@ -209,5 +209,33 @@
 (bind-keys global-keymap
 	   "W-C-g" '(popup-menu (josh-go-to-menu-gen 'bind josh-bindings (input-focus)))
 	   "W-g" '(popup-menu (josh-go-to-menu-gen 'goto josh-bindings))
-	   "W-S-g" '(josh-go-to-previous)
-	   "W-C-p" '(josh-go-to-previous))
+	   "W-S-g" '(josh-go-to-previous))
+
+;;;;;;;;;;
+;; Make it easier to go to the previously focused window
+;; (Useful since one of my wireless keyboards doesn't have a mouse)
+
+;; Holds the workspace and the window
+(defvar josh-current-cell (cons nil nil))
+(defvar josh-previous-cell (cons nil nil))
+
+(define (push-previous-window w)
+  "When focusing on a window, remember the last window."
+  (let* ((newcell (cons current-workspace (input-focus))))
+    (unless (equal newcell josh-current-cell)
+      (setq josh-previous-cell josh-current-cell)
+      (setq josh-current-cell newcell))))
+
+(add-hook 'focus-in-hook push-previous-window)
+
+(define (josh-go-to-previous-2)
+  "Go to the previous window."
+  (let* ((theworkspace (car josh-previous-cell))
+	 (thewindow (cdr josh-previous-cell)))
+    (when (and theworkspace thewindow)
+      (josh-go-to theworkspace thewindow))))
+
+(bind-keys global-keymap
+	   "W-C-p" '(josh-go-to-previous-2))
+
+;; (remove-hook 'focus-in-hook push-previous-window)
