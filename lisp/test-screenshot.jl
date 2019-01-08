@@ -41,20 +41,27 @@
 
 (define-command 'screenshot-window screenshot-window #:spec "%W")
 
-(define (scrot-clipboard)
-  (system "~/.sawfish/scripts/scrot-to-clipboard.sh &"))
+(define (screenshot-clipboard)
+  (system "~/.sawfish/scripts/screenshot-clipboard.sh &"))
 
-(define-command 'scrot-clipboard scrot-clipboard)
+(define screenshot-menu
+  '(("_w - Screenshot window" (screenshot-window (input-focus)))
+    ("_s - Screenshot scrot" (screenshot-scrot))
+    ("_c - Screenshot clipboard" (screenshot-clipboard))
+    ("_d - Screenshot desktop" (screenshot-desktop))
+    ("_o - Screenshot OCR to clipboard" (system "~/.sawfish/scripts/screenshot-ocr-clipboard.sh &"))))
 
 (define screenshot-keymap (make-keymap))
 (bind-keys screenshot-keymap
 	   "w" 'screenshot-window
-	   "s" 'screenshot-scrot
-	   "c" 'scrot-clipboard
-	   "d" '(screenshot-desktop))
+	   "r" 'screenshot-scrot
+	   "c" '(screenshot-clipboard)
+	   "d" '(screenshot-desktop)
+	   "W-s" 'screenshot-window
+	   "o" '(system "~/.sawfish/scripts/screenshot-ocr-clipboard.sh &"))
 
 (bind-keys global-keymap
-	   "W-C-s" '(screenshot-desktop)
+	   "W-C-s" '(popup-menu screenshot-menu)
 	   ;; Conflicts with record-window
 	   ;; "w-S-s" '(screenshot-scrot)
 	   "W-s" screenshot-keymap)
